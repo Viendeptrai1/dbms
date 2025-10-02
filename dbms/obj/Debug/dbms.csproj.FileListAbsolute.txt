@@ -1,0 +1,9 @@
+C:\Users\LENOVO\Music\dbms\dbms\bin\Debug\dbms.exe.config
+C:\Users\LENOVO\Music\dbms\dbms\bin\Debug\dbms.exe
+C:\Users\LENOVO\Music\dbms\dbms\bin\Debug\dbms.pdb
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.csproj.AssemblyReference.cache
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.Properties.Resources.resources
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.csproj.GenerateResource.cache
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.csproj.CoreCompileInputs.cache
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.exe
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.pdb

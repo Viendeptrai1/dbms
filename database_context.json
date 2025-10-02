@@ -1,0 +1,702 @@
+{
+  "database_info": {
+    "database_name": "QLNhapHang",
+    "connection_string": "Data Source=.;Initial Catalog=QLNhapHang;Integrated Security=True;TrustServerCertificate=True",
+    "provider": "System.Data.SqlClient",
+  "framework": ".NET Framework 4.7.2",
+  "sql_scripts_organization": {
+    "01_schema": "Database schema và phân quyền",
+    "02_stored_procedures": "Stored procedures nghiệp vụ",
+    "03_functions": "Scalar và table-valued functions", 
+    "04_views": "Views và báo cáo",
+    "05_triggers": "Triggers tự động hóa",
+    "06_indexes": "Indexes tối ưu hiệu suất",
+    "07_sample_data": "Dữ liệu mẫu (chưa có)",
+    "08_user_management": "Quản lý user và role",
+    "complete_database_setup_final.sql": "File SQL hoàn chỉnh để setup toàn bộ database",
+    "reset_database_plain_password.sql": "Script reset database với plain text password"
+  }
+},
+  "database_schema": {
+    "tables": {
+      "Roles": {
+        "description": "Bảng vai trò người dùng",
+        "columns": {
+          "RoleID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID vai trò"
+          },
+          "RoleName": {
+            "type": "NVARCHAR(50)",
+            "constraints": "NOT NULL UNIQUE",
+            "description": "Tên vai trò (Admin, Seller, User)"
+          }
+        },
+        "sample_data": ["Admin", "Seller", "User"]
+      },
+      "Users": {
+        "description": "Bảng người dùng",
+        "columns": {
+          "UserID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID người dùng"
+          },
+          "Username": {
+            "type": "VARCHAR(50)",
+            "constraints": "NOT NULL UNIQUE",
+            "description": "Tên đăng nhập"
+          },
+          "Password": {
+            "type": "NVARCHAR(100)",
+            "constraints": "NOT NULL",
+            "description": "Mật khẩu plain text (không băm)"
+          },
+          "FullName": {
+            "type": "NVARCHAR(100)",
+            "constraints": "NOT NULL",
+            "description": "Tên đầy đủ"
+          },
+          "IsActive": {
+            "type": "BIT",
+            "constraints": "NOT NULL DEFAULT 1",
+            "description": "Trạng thái hoạt động"
+          },
+          "CreatedAt": {
+            "type": "DATETIME2(3)",
+            "constraints": "NOT NULL DEFAULT SYSDATETIME()",
+            "description": "Ngày tạo"
+          }
+        },
+        "sample_data": [
+          {"username": "admin", "password": "admin123", "fullname": "Administrator"},
+          {"username": "seller", "password": "seller123", "fullname": "Seller User"},
+          {"username": "user", "password": "user123", "fullname": "Basic User"}
+        ]
+      },
+      "UsersRoles": {
+        "description": "Bảng trung gian M-N giữa Users và Roles",
+        "columns": {
+          "UserID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Users(UserID) ON DELETE CASCADE",
+            "description": "ID người dùng"
+          },
+          "RoleID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Roles(RoleID) ON DELETE CASCADE",
+            "description": "ID vai trò"
+          }
+        },
+        "constraints": {
+          "PRIMARY KEY": "(UserID, RoleID)"
+        }
+      },
+      "Categories": {
+        "description": "Bảng danh mục sản phẩm",
+        "columns": {
+          "CategoryID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID danh mục"
+          },
+          "CategoryName": {
+            "type": "NVARCHAR(100)",
+            "constraints": "NOT NULL UNIQUE",
+            "description": "Tên danh mục"
+          }
+        },
+        "sample_data": ["Dairy", "Beverages", "Snacks", "Frozen"]
+      },
+      "Products": {
+        "description": "Bảng sản phẩm",
+        "columns": {
+          "ProductID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID sản phẩm"
+          },
+          "SKU": {
+            "type": "VARCHAR(32)",
+            "constraints": "NOT NULL UNIQUE",
+            "description": "Mã sản phẩm"
+          },
+          "ProductName": {
+            "type": "NVARCHAR(200)",
+            "constraints": "NOT NULL",
+            "description": "Tên sản phẩm"
+          },
+          "SellingPrice": {
+            "type": "DECIMAL(10,2)",
+            "constraints": "NOT NULL DEFAULT 0, CHECK >= 0",
+            "description": "Giá bán"
+          },
+          "StockQuantity": {
+            "type": "INT",
+            "constraints": "NOT NULL DEFAULT 0, CHECK >= 0",
+            "description": "Số lượng tồn kho"
+          }
+        },
+        "sample_data": [
+          {"SKU": "MILK001", "ProductName": "Sữa tươi Vinamilk 1L", "SellingPrice": 25000, "StockQuantity": 100},
+          {"SKU": "COKE001", "ProductName": "Coca Cola 330ml", "SellingPrice": 15000, "StockQuantity": 200},
+          {"SKU": "CHIP001", "ProductName": "Khoai tây chiên Lays", "SellingPrice": 20000, "StockQuantity": 150},
+          {"SKU": "ICE001", "ProductName": "Kem tươi Wall's", "SellingPrice": 18000, "StockQuantity": 80}
+        ]
+      },
+      "ProductCategories": {
+        "description": "Bảng trung gian M-N giữa Products và Categories",
+        "columns": {
+          "ProductID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Products(ProductID) ON DELETE CASCADE",
+            "description": "ID sản phẩm"
+          },
+          "CategoryID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Categories(CategoryID) ON DELETE CASCADE",
+            "description": "ID danh mục"
+          }
+        },
+        "constraints": {
+          "PRIMARY KEY": "(ProductID, CategoryID)"
+        }
+      },
+      "Suppliers": {
+        "description": "Bảng nhà cung cấp",
+        "columns": {
+          "SupplierID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID nhà cung cấp"
+          },
+          "SupplierName": {
+            "type": "NVARCHAR(200)",
+            "constraints": "NOT NULL",
+            "description": "Tên nhà cung cấp"
+          },
+          "Phone": {
+            "type": "VARCHAR(20)",
+            "constraints": "NULL",
+            "description": "Số điện thoại"
+          }
+        },
+        "sample_data": [
+          {"SupplierName": "Công ty TNHH ABC", "Phone": "0123456789"},
+          {"SupplierName": "Công ty XYZ", "Phone": "0987654321"},
+          {"SupplierName": "Nhà cung cấp DEF", "Phone": "0369258147"}
+        ]
+      },
+      "GoodsReceipts": {
+        "description": "Bảng phiếu nhập hàng",
+        "columns": {
+          "ReceiptID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID phiếu nhập"
+          },
+          "SupplierID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Suppliers(SupplierID)",
+            "description": "ID nhà cung cấp"
+          },
+          "UserID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Users(UserID)",
+            "description": "ID nhân viên lập phiếu"
+          },
+          "ReceiptDate": {
+            "type": "DATETIME2(3)",
+            "constraints": "NOT NULL DEFAULT SYSDATETIME()",
+            "description": "Ngày nhập"
+          },
+          "TotalAmount": {
+            "type": "DECIMAL(15,2)",
+            "constraints": "NOT NULL DEFAULT 0",
+            "description": "Tổng tiền phiếu"
+          },
+          "Notes": {
+            "type": "NVARCHAR(500)",
+            "constraints": "NULL",
+            "description": "Ghi chú phiếu nhập"
+          }
+        }
+      },
+      "GoodsReceiptDetails": {
+        "description": "Bảng chi tiết phiếu nhập hàng",
+        "columns": {
+          "ReceiptDetailID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID chi tiết phiếu nhập"
+          },
+          "ReceiptID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to GoodsReceipts(ReceiptID) ON DELETE CASCADE",
+            "description": "ID phiếu nhập"
+          },
+          "ProductID": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Products(ProductID)",
+            "description": "ID sản phẩm"
+          },
+          "Quantity": {
+            "type": "INT",
+            "constraints": "NOT NULL, CHECK > 0",
+            "description": "Số lượng nhập"
+          },
+          "ImportPrice": {
+            "type": "DECIMAL(10,2)",
+            "constraints": "NOT NULL, CHECK > 0",
+            "description": "Giá nhập"
+          },
+          "LineAmount": {
+            "type": "DECIMAL(15,2)",
+            "constraints": "NOT NULL",
+            "description": "Thành tiền dòng"
+          }
+        }
+      },
+      "ProductPriceHistory": {
+        "description": "Bảng lịch sử thay đổi giá sản phẩm (tự động tạo bởi trigger)",
+        "columns": {
+          "PriceHistoryID": {
+            "type": "INT IDENTITY(1,1)",
+            "constraints": "PRIMARY KEY",
+            "description": "ID lịch sử giá"
+          },
+          "ProductID": {
+            "type": "INT",
+            "constraints": "NOT NULL",
+            "description": "ID sản phẩm"
+          },
+          "OldPrice": {
+            "type": "DECIMAL(10,2)",
+            "constraints": "NOT NULL",
+            "description": "Giá cũ"
+          },
+          "NewPrice": {
+            "type": "DECIMAL(10,2)",
+            "constraints": "NOT NULL",
+            "description": "Giá mới"
+          },
+          "ChangeDate": {
+            "type": "DATETIME2(3)",
+            "constraints": "NOT NULL DEFAULT SYSDATETIME()",
+            "description": "Thời gian thay đổi"
+          },
+          "ChangedBy": {
+            "type": "INT",
+            "constraints": "NOT NULL, FK to Users(UserID)",
+            "description": "ID người thay đổi"
+          },
+          "Reason": {
+            "type": "NVARCHAR(200)",
+            "constraints": "NULL",
+            "description": "Lý do thay đổi giá"
+          }
+        }
+      }
+    },
+    "views": {
+      "vw_ProductsWithCategories": {
+        "description": "View hiển thị sản phẩm với danh sách danh mục",
+        "columns": ["ProductID", "SKU", "ProductName", "SellingPrice", "StockQuantity", "Categories"],
+        "purpose": "Hiển thị sản phẩm kèm danh mục để dễ xem"
+      },
+      "vw_InventoryValuation": {
+        "description": "View báo cáo định giá tồn kho",
+        "columns": ["ProductID", "SKU", "ProductName", "StockQuantity", "LastImportPrice", "InventoryValue"],
+        "purpose": "Tính toán giá trị tồn kho theo giá nhập cuối"
+      },
+      "vw_ImportLines": {
+        "description": "View chi tiết dòng nhập hàng",
+        "columns": ["ReceiptID", "ReceiptDate", "SupplierName", "ProductID", "SKU", "ProductName", "Quantity", "ImportPrice", "LineAmount"],
+        "purpose": "Hiển thị chi tiết nhập hàng để báo cáo"
+      }
+    },
+    "stored_procedures": {
+      "sp_CreateGoodsReceipt": {
+        "description": "Tạo phiếu nhập hàng an toàn với TVP",
+        "parameters": {
+          "@SupplierName": "NVARCHAR(200) - Tên nhà cung cấp",
+          "@Username": "VARCHAR(50) - Tên đăng nhập nhân viên",
+          "@ReceiptDate": "DATETIME2(3) = NULL - Ngày nhập (mặc định hiện tại)",
+          "@Lines": "dbo.udt_GoodsReceiptLine READONLY - Danh sách sản phẩm nhập",
+          "@NewReceiptID": "BIGINT OUTPUT - ID phiếu nhập mới tạo"
+        },
+        "features": [
+          "Validation đầy đủ",
+          "Transaction an toàn",
+          "Tự động cập nhật tồn kho qua trigger",
+          "Tự động tính tổng tiền"
+        ]
+      },
+      "sp_BulkAdjustPriceByPercent": {
+        "description": "Điều chỉnh giá hàng loạt theo phần trăm",
+        "parameters": {
+          "@DeltaPercent": "DECIMAL(6,2) - Phần trăm thay đổi (+10 tăng 10%, -5 giảm 5%)",
+          "@CategoryName": "NVARCHAR(100) = NULL - Lọc theo danh mục",
+          "@SKUs": "dbo.udt_SKUList READONLY - Danh sách SKU cụ thể"
+        },
+        "features": [
+          "Điều chỉnh theo danh mục hoặc SKU cụ thể",
+          "Validation giá âm",
+          "Transaction an toàn"
+        ]
+      },
+      "sp_AddProductWithCategories": {
+        "description": "Thêm sản phẩm mới với nhiều danh mục",
+        "parameters": {
+          "@SKU": "VARCHAR(32) - Mã sản phẩm",
+          "@ProductName": "NVARCHAR(200) - Tên sản phẩm",
+          "@SellingPrice": "DECIMAL(10,2) - Giá bán",
+          "@InitialStock": "INT = 0 - Tồn kho ban đầu",
+          "@CategoryNames": "dbo.udt_CategoryNameList READONLY - Danh sách tên danh mục",
+          "@NewProductID": "INT OUTPUT - ID sản phẩm mới tạo"
+        },
+        "features": [
+          "Tự động tạo danh mục nếu chưa có",
+          "Gán nhiều danh mục cho sản phẩm",
+          "Validation SKU trùng"
+        ]
+      },
+      "sp_DeleteGoodsReceipt": {
+        "description": "Xóa phiếu nhập hàng (có kiểm tra tồn kho)",
+        "parameters": {
+          "@ReceiptID": "BIGINT - ID phiếu nhập cần xóa"
+        },
+        "features": [
+          "Tự động trừ tồn kho qua trigger",
+          "Kiểm tra tồn kho âm",
+          "Rollback nếu vi phạm ràng buộc"
+        ]
+      }
+    },
+    "user_defined_types": {
+      "udt_GoodsReceiptLine": {
+        "description": "Table-Valued Parameter cho dòng phiếu nhập",
+        "columns": {
+          "ProductSKU": "VARCHAR(32) NOT NULL - Mã sản phẩm",
+          "Quantity": "INT NOT NULL CHECK > 0 - Số lượng",
+          "ImportPrice": "DECIMAL(10,2) NOT NULL CHECK > 0 - Giá nhập",
+          "ExpiryDate": "DATE NULL - Ngày hết hạn"
+        }
+      },
+      "udt_SKUList": {
+        "description": "Table-Valued Parameter cho danh sách SKU",
+        "columns": {
+          "ProductSKU": "VARCHAR(32) NOT NULL PRIMARY KEY - Mã sản phẩm"
+        }
+      },
+      "udt_CategoryNameList": {
+        "description": "Table-Valued Parameter cho danh sách tên danh mục",
+        "columns": {
+          "CategoryName": "NVARCHAR(100) NOT NULL PRIMARY KEY - Tên danh mục"
+        }
+      }
+    },
+    "scalar_functions": {
+      "fn_TotalStock": {
+        "description": "Lấy tổng tồn kho của sản phẩm",
+        "parameters": "@ProductID INT",
+        "return_type": "INT",
+        "usage": "SELECT dbo.fn_TotalStock(1)"
+      },
+      "fn_LastImportPrice": {
+        "description": "Lấy giá nhập cuối cùng của sản phẩm",
+        "parameters": "@ProductID INT",
+        "return_type": "DECIMAL(10,2)",
+        "usage": "SELECT dbo.fn_LastImportPrice(1)"
+      },
+      "fn_ProductInventoryValue": {
+        "description": "Tính giá trị tồn kho của sản phẩm",
+        "parameters": "@ProductID INT",
+        "return_type": "DECIMAL(18,2)",
+        "usage": "SELECT dbo.fn_ProductInventoryValue(1)"
+      },
+      "fn_ProductCount": {
+        "description": "Đếm tổng số sản phẩm",
+        "parameters": "Không có",
+        "return_type": "INT",
+        "usage": "SELECT dbo.fn_ProductCount()"
+      },
+      "fn_TotalInventoryValue": {
+        "description": "Tính tổng giá trị tồn kho",
+        "parameters": "Không có",
+        "return_type": "DECIMAL(18,2)",
+        "usage": "SELECT dbo.fn_TotalInventoryValue()"
+      }
+    },
+    "table_valued_functions": {
+      "fn_ProductImportHistory": {
+        "description": "Lịch sử nhập hàng của sản phẩm",
+        "parameters": "@ProductID INT",
+        "return_columns": ["ReceiptID", "ReceiptDate", "SupplierName", "Quantity", "ImportPrice", "LineAmount"],
+        "usage": "SELECT * FROM dbo.fn_ProductImportHistory(1)"
+      },
+      "fn_ProductsByCategory": {
+        "description": "Sản phẩm theo danh mục",
+        "parameters": "@CategoryName NVARCHAR(100)",
+        "return_columns": ["ProductID", "SKU", "ProductName", "SellingPrice", "StockQuantity"],
+        "usage": "SELECT * FROM dbo.fn_ProductsByCategory(N'Dairy')"
+      },
+      "fn_TopProductsByImportValue": {
+        "description": "Top sản phẩm theo giá trị nhập",
+        "parameters": "@From DATETIME2(3), @To DATETIME2(3)=NULL, @TopN INT=10, @SupplierName NVARCHAR(200)=NULL, @CategoryName NVARCHAR(100)=NULL",
+        "return_columns": ["ProductID", "SKU", "ProductName", "TotalQty", "ImportValue"],
+        "usage": "SELECT * FROM dbo.fn_TopProductsByImportValue('2024-01-01', '2024-12-31', 5, NULL, N'Dairy')"
+      },
+      "fn_ImportSummaryBySupplier": {
+        "description": "Tổng hợp nhập hàng theo nhà cung cấp",
+        "parameters": "@From DATETIME2(3), @To DATETIME2(3)=NULL",
+        "return_columns": ["SupplierName", "TotalReceipts", "TotalQty", "TotalValue"],
+        "usage": "SELECT * FROM dbo.fn_ImportSummaryBySupplier('2024-01-01', '2024-12-31')"
+      },
+      "fn_ProductsNeverImported": {
+        "description": "Sản phẩm chưa từng nhập",
+        "parameters": "Không có",
+        "return_columns": ["ProductID", "SKU", "ProductName", "SellingPrice", "StockQuantity"],
+        "usage": "SELECT * FROM dbo.fn_ProductsNeverImported()"
+      }
+    },
+    "user_management_stored_procedures": {
+      "sp_CreateUserWithRole": {
+        "description": "Tạo user mới và gán role",
+        "parameters": "@Username VARCHAR(50), @Password NVARCHAR(100), @FullName NVARCHAR(100), @RoleName NVARCHAR(20), @IsActive BIT=1, @NewUserID INT OUTPUT, @Message NVARCHAR(200) OUTPUT",
+        "features": [
+          "Tạo user với password plain text (không băm)",
+          "Tự động gán role cho user",
+          "Kiểm tra username trùng lặp",
+          "Kiểm tra role hợp lệ",
+          "Transaction safety với rollback"
+        ],
+        "usage": "EXEC sp_CreateUserWithRole @Username='newuser', @Password='password123', @FullName=N'Tên đầy đủ', @RoleName='Seller', @NewUserID=@NewUserID OUTPUT, @Message=@Message OUTPUT"
+      },
+      "sp_ChangeUserRole": {
+        "description": "Thay đổi role của user",
+        "parameters": "@Username NVARCHAR(50), @NewRoleName NVARCHAR(20), @Message NVARCHAR(200) OUTPUT",
+        "features": [
+          "Xóa role cũ và gán role mới",
+          "Kiểm tra user và role tồn tại",
+          "Transaction safety"
+        ],
+        "usage": "EXEC sp_ChangeUserRole @Username='user1', @NewRoleName='Admin', @Message=@Message OUTPUT"
+      },
+      "sp_ToggleUserStatus": {
+        "description": "Khóa/mở khóa user",
+        "parameters": "@Username NVARCHAR(50), @Message NVARCHAR(200) OUTPUT",
+        "features": [
+          "Toggle IsActive status",
+          "Không cần transaction vì đơn giản"
+        ],
+        "usage": "EXEC sp_ToggleUserStatus @Username='user1', @Message=@Message OUTPUT"
+      },
+      "sp_DeleteUser": {
+        "description": "Xóa user (soft delete)",
+        "parameters": "@Username NVARCHAR(50), @Message NVARCHAR(200) OUTPUT",
+        "features": [
+          "Soft delete - không xóa thật",
+          "Đổi username thành username_DELETED_YYYYMMDD",
+          "Xóa tất cả roles của user",
+          "Giữ lịch sử trong database"
+        ],
+        "usage": "EXEC sp_DeleteUser @Username='user1', @Message=@Message OUTPUT"
+      },
+      "sp_GetUsersWithRoles": {
+        "description": "Lấy danh sách users với roles",
+        "parameters": "Không có",
+        "return_columns": ["UserID", "Username", "IsActive", "Roles", "RoleCount"],
+        "features": [
+          "Aggregate roles thành string",
+          "Hiển thị số lượng roles",
+          "Sắp xếp theo username"
+        ],
+        "usage": "EXEC sp_GetUsersWithRoles"
+      },
+      "sp_CheckUserPermission": {
+        "description": "Kiểm tra quyền user",
+        "parameters": "@Username NVARCHAR(50), @Permission NVARCHAR(50)",
+        "return_columns": ["HasPermission BIT"],
+        "features": [
+          "Kiểm tra user có role cụ thể không",
+          "Kiểm tra user active",
+          "Trả về 1 hoặc 0"
+        ],
+        "usage": "EXEC sp_CheckUserPermission @Username='admin', @Permission='Admin'"
+      },
+      "sp_RevokeAllUserPermissions": {
+        "description": "Revoke tất cả quyền của user",
+        "parameters": "@Username NVARCHAR(50), @Message NVARCHAR(200) OUTPUT",
+        "features": [
+          "Xóa tất cả roles của user",
+          "Giữ nguyên user account",
+          "Transaction safety"
+        ],
+        "usage": "EXEC sp_RevokeAllUserPermissions @Username='user1', @Message=@Message OUTPUT"
+      }
+    },
+    "triggers": {
+      "TR_GRD_StockAndTotal": {
+        "description": "Trigger cập nhật tồn kho và tổng tiền khi thay đổi GoodsReceiptDetails",
+        "events": ["INSERT", "UPDATE", "DELETE"],
+        "features": [
+          "Tự động cập nhật StockQuantity trong Products",
+          "Tự động tính lại TotalAmount trong GoodsReceipts",
+          "Kiểm tra tồn kho âm và rollback nếu vi phạm"
+        ]
+      },
+      "TR_Products_Normalize": {
+        "description": "Chuẩn hóa SKU và ProductName",
+        "events": ["INSERT", "UPDATE"],
+        "features": [
+          "Tự động trim và uppercase SKU",
+          "Tự động trim ProductName"
+        ]
+      },
+      "TR_Product_LogPriceChange": {
+        "description": "Ghi log lịch sử thay đổi giá",
+        "events": ["UPDATE"],
+        "features": [
+          "Tự động ghi vào ProductPriceHistory khi giá thay đổi",
+          "Lưu giá cũ, giá mới và thời gian"
+        ]
+      },
+      "TR_Categories_PreventDeleteIfInUse": {
+        "description": "Ngăn xóa danh mục đang được sử dụng",
+        "events": ["DELETE"],
+        "features": [
+          "Kiểm tra danh mục có sản phẩm không",
+          "Ngăn xóa nếu đang được sử dụng"
+        ]
+      },
+      "TR_DDL_PreventDrop": {
+        "description": "DDL Trigger ngăn DROP/ALTER bảng lõi",
+        "events": ["DROP_TABLE", "ALTER_TABLE"],
+        "features": [
+          "Ngăn xóa/sửa các bảng quan trọng",
+          "Bảo vệ cấu trúc database"
+        ]
+      }
+    },
+    "indexes": {
+      "IX_Products_SKU": "Index trên Products(SKU)",
+      "IX_Products_ProductName": "Index trên Products(ProductName)",
+      "IX_GoodsReceipts_ReceiptDate": "Index trên GoodsReceipts(ReceiptDate)",
+      "IX_GoodsReceipts_SupplierID": "Index trên GoodsReceipts(SupplierID)",
+      "IX_GoodsReceiptDetails_ProductID": "Index trên GoodsReceiptDetails(ProductID)",
+      "IX_GoodsReceiptDetails_ReceiptID": "Index trên GoodsReceiptDetails(ReceiptID)",
+      "IX_Users_Username": "Index trên Users(Username)",
+      "IX_GR_ReceiptDate": "Index trên GoodsReceipts(ReceiptDate) INCLUDE (SupplierID, UserID, TotalAmount)",
+      "IX_GRD_ReceiptID": "Index trên GoodsReceiptDetails(ReceiptID) INCLUDE (ProductID, Quantity, ImportPrice)"
+    }
+  },
+  "security": {
+    "database_roles": {
+      "dbrole_Admin": {
+        "permissions": ["CONTROL ON SCHEMA::dbo"],
+        "description": "Toàn quyền trên database",
+        "test_user": "admin_test"
+      },
+      "dbrole_Seller": {
+        "permissions": [
+          "SELECT trên tất cả bảng chính",
+          "UPDATE (StockQuantity, SellingPrice) trên Products",
+          "SELECT trên Views và TVF",
+          "EXECUTE trên scalar functions và stored procedures",
+          "EXECUTE/REFERENCES trên User-Defined Types"
+        ],
+        "description": "Quyền nghiệp vụ bán hàng",
+        "test_user": "seller_test"
+      },
+      "dbrole_User": {
+        "permissions": [
+          "SELECT trên Products, Categories",
+          "SELECT trên vw_ProductsWithCategories",
+          "SELECT trên fn_ProductsByCategory"
+        ],
+        "description": "Chỉ đọc thông tin",
+        "test_user": "user_test"
+      }
+    }
+  },
+  "business_logic": {
+    "product_management": {
+      "add_product": "Sử dụng sp_AddProductWithCategories với TVP danh mục",
+      "update_price": "Sử dụng sp_BulkAdjustPriceByPercent cho hàng loạt",
+      "check_inventory": "Sử dụng vw_InventoryValuation để xem giá trị tồn kho",
+      "price_history": "Tự động ghi vào ProductPriceHistory qua trigger"
+    },
+    "goods_receipt": {
+      "create_receipt": "Sử dụng sp_CreateGoodsReceipt với TVP udt_GoodsReceiptLine",
+      "delete_receipt": "Sử dụng sp_DeleteGoodsReceipt (có kiểm tra tồn kho)",
+      "auto_stock_update": "Trigger tự động cập nhật StockQuantity",
+      "auto_total_calculation": "Trigger tự động tính TotalAmount"
+    },
+    "reporting": {
+      "import_lines": "Sử dụng vw_ImportLines cho báo cáo nhập hàng",
+      "top_products": "Sử dụng fn_TopProductsByImportValue cho báo cáo top sản phẩm",
+      "supplier_summary": "Sử dụng fn_ImportSummaryBySupplier cho báo cáo nhà cung cấp",
+      "product_import_history": "Sử dụng fn_ProductImportHistory cho lịch sử sản phẩm"
+    },
+    "user_management": {
+      "create_user": "Sử dụng sp_CreateUserWithRole với password plain text",
+      "change_role": "Sử dụng sp_ChangeUserRole để thay đổi vai trò",
+      "toggle_status": "Sử dụng sp_ToggleUserStatus để khóa/mở khóa user",
+      "delete_user": "Sử dụng sp_DeleteUser cho soft delete",
+      "list_users": "Sử dụng sp_GetUsersWithRoles để xem danh sách",
+      "check_permission": "Sử dụng sp_CheckUserPermission để kiểm tra quyền",
+      "revoke_permissions": "Sử dụng sp_RevokeAllUserPermissions để thu hồi quyền",
+      "password_hashing": "Tất cả password được lưu plain text (không băm)",
+      "default_users": {
+        "admin": "admin / admin123 (Role: Admin)",
+        "seller": "seller / seller123 (Role: Seller)", 
+        "user": "user / user123 (Role: User)"
+      }
+    }
+  },
+  "dataset_mapping": {
+    "table_adapters": {
+      "CategoriesTableAdapter": "Quản lý danh mục sản phẩm",
+      "ProductsTableAdapter": "Quản lý sản phẩm",
+      "ProductCategoriesTableAdapter": "Quản lý phân loại sản phẩm",
+      "SuppliersTableAdapter": "Quản lý nhà cung cấp",
+      "GoodsReceiptsTableAdapter": "Quản lý phiếu nhập hàng",
+      "GoodsReceiptDetailsTableAdapter": "Quản lý chi tiết phiếu nhập",
+      "UsersTableAdapter": "Quản lý người dùng",
+      "RolesTableAdapter": "Quản lý vai trò",
+      "UsersRolesTableAdapter": "Quản lý phân quyền",
+      "ProductPriceHistoryTableAdapter": "Lịch sử giá sản phẩm"
+    },
+    "views_adapters": {
+      "vw_ImportLinesTableAdapter": "Báo cáo dòng nhập hàng",
+      "vw_InventoryValuationTableAdapter": "Báo cáo định giá tồn kho",
+      "vw_ProductsWithCategoriesTableAdapter": "Sản phẩm với danh mục"
+    },
+    "stored_procedures_adapters": {
+      "sp_AddProductWithCategoriesTableAdapter": "Thêm sản phẩm với danh mục",
+      "sp_BulkAdjustPriceByPercentTableAdapter": "Điều chỉnh giá hàng loạt",
+      "sp_CreateGoodsReceiptTableAdapter": "Tạo phiếu nhập hàng",
+      "sp_DeleteGoodsReceiptTableAdapter": "Xóa phiếu nhập hàng"
+    },
+    "functions_adapters": {
+      "fn_ImportSummaryBySupplierTableAdapter": "Tổng hợp theo nhà cung cấp",
+      "fn_ProductImportHistoryTableAdapter": "Lịch sử nhập sản phẩm",
+      "fn_ProductsByCategoryTableAdapter": "Sản phẩm theo danh mục",
+      "fn_TopProductsByImportValueTableAdapter": "Top sản phẩm theo giá trị nhập"
+    }
+  },
+  "development_notes": {
+    "connection_management": "Sử dụng Settings.Default.QLNhapHangConnectionString",
+    "transaction_handling": "Tất cả stored procedures đều có XACT_ABORT ON",
+    "error_handling": "Sử dụng TRY-CATCH và THROW cho error handling",
+    "validation": "Validation ở cả database level (CHECK constraints) và application level",
+    "performance": "Có indexes cho các foreign keys và columns hay query",
+    "security": "Phân quyền chi tiết theo role, sử dụng database roles",
+    "data_integrity": "Triggers đảm bảo tính nhất quán dữ liệu tự động",
+    "password_management": "Password được lưu plain text, không băm để đơn giản hóa",
+    "database_setup": "Sử dụng complete_database_setup_final.sql để setup toàn bộ database",
+    "reset_database": "Sử dụng reset_database_plain_password.sql để reset database hoàn toàn"
+  }
+}
