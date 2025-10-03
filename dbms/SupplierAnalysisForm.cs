@@ -270,5 +270,63 @@ namespace dbms
         {
             this.Close();
         }
+
+        // New method to load supplier performance summary from view
+        private void LoadSupplierPerformanceSummary()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT * FROM dbo.vw_SupplierPerformanceSummary ORDER BY TotalValue DESC";
+                    
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt);
+                            
+                            // This could be used to populate a new tab or replace existing data
+                            // For now, we'll add it as a method that can be called
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tải tổng hợp hiệu suất nhà cung cấp");
+            }
+        }
+
+        // New method to load monthly import trends
+        private void LoadMonthlyImportTrends()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT TOP 12 * FROM dbo.vw_MonthlyImportTrends ORDER BY Year DESC, Month DESC";
+                    
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt);
+                            
+                            // This could be used to show trends in a chart or grid
+                            // For now, we'll add it as a method that can be called
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tải xu hướng nhập hàng theo tháng");
+            }
+        }
     }
 }

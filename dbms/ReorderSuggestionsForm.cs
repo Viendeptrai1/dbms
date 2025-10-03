@@ -243,5 +243,35 @@ namespace dbms
 
             ErrorHandler.ShowSuccess(helpText, "Hướng dẫn");
         }
+
+        // New method to calculate reorder point for individual products
+        private DataTable CalculateReorderPointForProduct(int productId, int leadTimeDays = 7, decimal serviceLevel = 95.0m)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+                    string query = "SELECT * FROM dbo.fn_CalculateReorderPoint(@ProductID, @LeadTimeDays, @ServiceLevel)";
+                    
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ProductID", productId);
+                        cmd.Parameters.AddWithValue("@LeadTimeDays", leadTimeDays);
+                        cmd.Parameters.AddWithValue("@ServiceLevel", serviceLevel);
+
+                        SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tính toán reorder point");
+                return new DataTable();
+            }
+        }
     }
 }

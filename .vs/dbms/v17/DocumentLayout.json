@@ -3,68 +3,68 @@
   "WorkspaceRootPath": "C:\\Users\\LENOVO\\Music\\dbms\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\ManageUserRolesForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\ManageUserRolesForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\QLNhapHangDataSet.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsd||{07AC752B-D2B0-4DCD-AD9C-237BF561A30A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\QLNhapHangDataSet.xsd||{07AC752B-D2B0-4DCD-AD9C-237BF561A30A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|c:\\users\\lenovo\\music\\dbms\\dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xss||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\QLNhapHangDataSet.xss||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\UserManagementForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsc||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\QLNhapHangDataSet.xsc||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\manageuserrolesform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\App.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\App.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xss||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\QLNhapHangDataSet.xss||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Properties\\Settings.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\Properties\\Settings.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsc||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\QLNhapHangDataSet.xsc||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\App.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\App.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\CreateReceiptForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\CreateReceiptForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Properties\\Settings.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\Properties\\Settings.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\LoginForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\LoginForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\properties\\settings.settings||{6D2695F9-5365-4A78-89ED-F205C045BFE6}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\CreateReceiptForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\CreateReceiptForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dbms\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\LoginForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\LoginForm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\QLNhapHangDataSet.Designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsd||{07AC752B-D2B0-4DCD-AD9C-237BF561A30A}",
+      "RelativeMoniker": "D:0:0:{3B1CA98F-C3EA-4B97-BA60-C581EBC73F55}|dbms\\dbms.csproj|solutionrelative:dbms\\QLNhapHangDataSet.xsd||{07AC752B-D2B0-4DCD-AD9C-237BF561A30A}"
     }
   ],
   "DocumentGroupContainers": [
@@ -91,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "UserManagementForm.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs",
               "RelativeDocumentMoniker": "dbms\\UserManagementForm.cs",
@@ -99,12 +99,11 @@
               "RelativeToolTip": "dbms\\UserManagementForm.cs",
               "ViewState": "AgIAABcAAAAAAAAAAAArwJcAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T14:16:42.133Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-02T14:16:42.133Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "UserManagementForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\UserManagementForm.cs",
               "RelativeDocumentMoniker": "dbms\\UserManagementForm.cs",
@@ -115,7 +114,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "ManageUserRolesForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\ManageUserRolesForm.cs",
               "RelativeDocumentMoniker": "dbms\\ManageUserRolesForm.cs",
@@ -126,7 +125,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 5,
               "Title": "QLNhapHangDataSet.xss",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xss",
               "RelativeDocumentMoniker": "dbms\\QLNhapHangDataSet.xss",
@@ -138,7 +137,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 6,
               "Title": "QLNhapHangDataSet.xsc",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsc",
               "RelativeDocumentMoniker": "dbms\\QLNhapHangDataSet.xsc",
@@ -150,7 +149,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "App.config",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\App.config",
               "RelativeDocumentMoniker": "dbms\\App.config",
@@ -162,7 +161,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 8,
               "Title": "Settings.Designer.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Properties\\Settings.Designer.cs",
               "RelativeDocumentMoniker": "dbms\\Properties\\Settings.Designer.cs",
@@ -174,7 +173,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 9,
               "Title": "Settings.settings",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Properties\\Settings.settings",
               "RelativeDocumentMoniker": "dbms\\Properties\\Settings.settings",
@@ -185,7 +184,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 10,
               "Title": "CreateReceiptForm.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\CreateReceiptForm.cs",
               "RelativeDocumentMoniker": "dbms\\CreateReceiptForm.cs",
@@ -197,7 +196,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 11,
               "Title": "LoginForm.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\LoginForm.cs",
               "RelativeDocumentMoniker": "dbms\\LoginForm.cs",
@@ -205,12 +204,11 @@
               "RelativeToolTip": "dbms\\LoginForm.cs",
               "ViewState": "AgIAACIAAAAAAAAAAAAcwCYAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-01T05:49:47.425Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-10-01T05:49:47.425Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 12,
               "Title": "LoginForm.cs [Design]",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\LoginForm.cs",
               "RelativeDocumentMoniker": "dbms\\LoginForm.cs",
@@ -221,7 +219,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 13,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Program.cs",
               "RelativeDocumentMoniker": "dbms\\Program.cs",
@@ -233,7 +231,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 14,
               "Title": "QLNhapHangDataSet.Designer.cs",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.Designer.cs",
               "RelativeDocumentMoniker": "dbms\\QLNhapHangDataSet.Designer.cs",
@@ -245,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 15,
               "Title": "QLNhapHangDataSet.xsd",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\QLNhapHangDataSet.xsd",
               "RelativeDocumentMoniker": "dbms\\QLNhapHangDataSet.xsd",
@@ -256,7 +254,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 1,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\LENOVO\\Music\\dbms\\dbms\\Form1.cs",
               "RelativeDocumentMoniker": "dbms\\Form1.cs",

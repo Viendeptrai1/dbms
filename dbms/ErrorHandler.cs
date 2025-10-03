@@ -119,6 +119,26 @@ namespace dbms
         }
 
         /// <summary>
+        /// Hiển thị thông báo lỗi
+        /// </summary>
+        /// <param name="title">Tiêu đề lỗi</param>
+        /// <param name="message">Nội dung lỗi</param>
+        public static void ShowError(string title, string message)
+        {
+            // Đảm bảo message không null và có độ dài phù hợp
+            if (string.IsNullOrEmpty(message))
+                message = "Lỗi không xác định";
+                
+            // Thêm line breaks nếu message quá dài
+            if (message.Length > 100)
+            {
+                message = message.Replace(". ", ".\n");
+            }
+            
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
         /// Hiển thị hộp thoại xác nhận
         /// </summary>
         /// <param name="message">Nội dung câu hỏi</param>

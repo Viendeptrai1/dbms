@@ -354,6 +354,46 @@ namespace dbms
                 ErrorHandler.HandleGeneralError(ex, "tải phân quyền");
             }
         }
+
+        // New menu handlers for integrated features
+        private void btnMonthlyReport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MonthlyReportForm form = new MonthlyReportForm();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "mở báo cáo tháng");
+            }
+        }
+
+        private void btnTwoTierPermissions_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TwoTierPermissionsForm form = new TwoTierPermissionsForm();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "mở quản lý phân quyền 2 cấp");
+            }
+        }
+
+        private void btnProductDashboard_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProductPerformanceDashboardForm form = new ProductPerformanceDashboardForm();
+                form.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "mở dashboard sản phẩm");
+            }
+        }
         #endregion
     }
 }
