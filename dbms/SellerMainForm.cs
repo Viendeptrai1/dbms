@@ -52,7 +52,7 @@ namespace dbms
             {
                 lblConnectionStatus.Text = "Kết nối: Lỗi - " + ex.Message;
                 lblConnectionStatus.ForeColor = Color.Red;
-                MessageBox.Show("Lỗi kết nối database: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "kết nối database");
             }
         }
 
@@ -70,7 +70,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải dữ liệu");
             }
         }
 
@@ -88,12 +88,12 @@ namespace dbms
                 {
                     LoadProducts();
                     LoadCategories();
-                    MessageBox.Show("Thêm sản phẩm thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Thêm sản phẩm thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi thêm sản phẩm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "thêm sản phẩm");
             }
         }
 
@@ -105,12 +105,12 @@ namespace dbms
                 if (priceAdjustForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadProducts();
-                    MessageBox.Show("Điều chỉnh giá thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Điều chỉnh giá thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi điều chỉnh giá: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "điều chỉnh giá");
             }
         }
 
@@ -132,12 +132,12 @@ namespace dbms
                     LoadGoodsReceipts();
                     LoadGoodsReceiptDetails();
                     LoadProducts(); // Refresh để thấy tồn kho mới
-                    MessageBox.Show("Tạo phiếu nhập thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Tạo phiếu nhập thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tạo phiếu nhập: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tạo phiếu nhập");
             }
         }
 

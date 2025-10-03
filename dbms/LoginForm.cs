@@ -29,8 +29,7 @@ namespace dbms
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!", "Thông báo", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!", "Thiếu thông tin");
                 return;
             }
 
@@ -43,16 +42,14 @@ namespace dbms
                 }
                 else
                 {
-                    MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ErrorHandler.ShowWarning("Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập");
                     txtPassword.Clear();
                     txtUsername.Focus();
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kết nối database: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "kết nối database");
             }
         }
 

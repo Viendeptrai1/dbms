@@ -54,10 +54,13 @@ namespace dbms
                     dgvProducts.Columns["ProductID"].Visible = false;
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách sản phẩm");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi load sản phẩm: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách sản phẩm");
             }
         }
 
@@ -81,10 +84,13 @@ namespace dbms
                     cmbCategory.SelectedIndex = 0;
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách danh mục");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi load categories: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách danh mục");
             }
         }
         #endregion
@@ -94,8 +100,7 @@ namespace dbms
         {
             if (dgvProducts.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn sản phẩm!", "Thông báo", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn sản phẩm!", "⚠️ Chưa chọn sản phẩm");
                 return;
             }
 
@@ -105,30 +110,26 @@ namespace dbms
 
             if (!decimal.TryParse(txtNewPrice.Text, out decimal newPrice))
             {
-                MessageBox.Show("Giá mới không hợp lệ!", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.ShowWarning("Giá mới không hợp lệ!", "⚠️ Giá không hợp lệ");
                 return;
             }
 
             if (newPrice <= 0)
             {
-                MessageBox.Show("Giá mới phải > 0!", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.ShowWarning("Giá mới phải > 0!", "Giá không hợp lệ");
                 return;
             }
 
             string reason = txtReason.Text.Trim();
 
-            DialogResult result = MessageBox.Show(
+            var result = ErrorHandler.ShowConfirmation(
                 $"Cập nhật giá cho \"{productName}\"?\n" +
                 $"Giá cũ: {oldPrice:N0} đ\n" +
                 $"Giá mới: {newPrice:N0} đ\n" +
                 $"Lý do: {(string.IsNullOrEmpty(reason) ? "(Không có)" : reason)}",
-                "Xác nhận",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
+                "Xác nhận cập nhật giá");
 
-            if (result == DialogResult.Yes)
+            if (result)
             {
                 UpdateSinglePrice(productID, newPrice, reason);
             }
@@ -157,19 +158,24 @@ namespace dbms
                         cmd.ExecuteNonQuery();
 
                         string message = outputParam.Value.ToString();
-                        MessageBox.Show(message, "Thành công", 
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        LoadProducts();
+                        
+                        // Sử dụng ErrorHandler để xử lý kết quả
+                        if (ErrorHandler.HandleStoredProcedureResult(message, "cập nhật giá sản phẩm"))
+                        {
+                            LoadProducts();
+                        }
                         txtNewPrice.Clear();
                         txtReason.Clear();
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "cập nhật giá sản phẩm");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "cập nhật giá sản phẩm");
             }
         }
 
@@ -190,8 +196,7 @@ namespace dbms
             string strategy = cmbStrategy.SelectedItem?.ToString();
             if (string.IsNullOrEmpty(strategy))
             {
-                MessageBox.Show("Vui lòng chọn strategy!", "Thông báo", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn strategy!", "⚠️ Thiếu thông tin");
                 return;
             }
 
@@ -202,23 +207,20 @@ namespace dbms
             {
                 if (!decimal.TryParse(txtAdjustPercent.Text, out decimal percent))
                 {
-                    MessageBox.Show("Phần trăm điều chỉnh không hợp lệ!", "Lỗi", 
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ErrorHandler.ShowWarning("Phần trăm điều chỉnh không hợp lệ!", "⚠️ Giá trị không hợp lệ");
                     return;
                 }
                 adjustPercent = percent;
             }
 
-            DialogResult result = MessageBox.Show(
+            var result = ErrorHandler.ShowConfirmation(
                 $"Áp dụng strategy: {strategy}\n" +
                 $"Category: {(category ?? "Tất cả")}\n" +
                 $"Adjust %: {(adjustPercent.HasValue ? adjustPercent.Value.ToString() : "N/A")}\n\n" +
-                $"Điều chỉnh giá hàng loạt?",
-                "Xác nhận",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                $"Tiếp tục?",
+                "Xác nhận áp dụng strategy");
 
-            if (result == DialogResult.Yes)
+            if (result)
             {
                 ApplyDynamicStrategy(strategy, category, adjustPercent);
             }
@@ -254,18 +256,21 @@ namespace dbms
                         int affected = Convert.ToInt32(affectedParam.Value);
                         string message = messageParam.Value.ToString();
 
-                        MessageBox.Show(message, "Kết quả", 
-                            MessageBoxButtons.OK, 
-                            affected > 0 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-                        LoadProducts();
+                        // Sử dụng ErrorHandler để xử lý kết quả
+                        if (ErrorHandler.HandleStoredProcedureResult(message, "áp dụng strategy giá"))
+                        {
+                            LoadProducts();
+                        }
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "áp dụng strategy giá");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "áp dụng strategy giá");
             }
         }
 
@@ -283,8 +288,7 @@ namespace dbms
         {
             if (dgvProducts.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn sản phẩm!", "Thông báo", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn sản phẩm!", "⚠️ Chưa chọn sản phẩm");
                 return;
             }
 
@@ -330,10 +334,13 @@ namespace dbms
                         dgvPriceHistory.Columns["PercentChange"].DefaultCellStyle.Format = "N2";
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải lịch sử giá");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi load lịch sử: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải lịch sử giá");
             }
         }
         #endregion

@@ -13,14 +13,25 @@ namespace dbms
 {
     public partial class ManageUserRolesForm : Form
     {
-        private int userID;
-        private string username;
-        private List<int> currentRoles;
-        private List<int> availableRoles;
+        private readonly int userID;
+        private readonly string username;
+        private readonly List<int> currentRoles;
+        private readonly List<int> availableRoles;
 
         public ManageUserRolesForm(int userID, string username)
         {
             this.userID = userID;
+            this.username = username;
+            this.currentRoles = new List<int>();
+            this.availableRoles = new List<int>();
+            InitializeComponent();
+            InitializeData();
+        }
+
+        // Constructor overload cho UserManagementForm
+        public ManageUserRolesForm(string username, string _)
+        {
+            this.userID = 0; // Sẽ tìm từ username
             this.username = username;
             this.currentRoles = new List<int>();
             this.availableRoles = new List<int>();
@@ -80,8 +91,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu vai trò: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải dữ liệu vai trò");
             }
         }
 
@@ -133,8 +143,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi cập nhật vai trò: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "cập nhật vai trò");
             }
         }
 

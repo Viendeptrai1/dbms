@@ -105,16 +105,14 @@ namespace dbms
                         
                         if (dt.Rows.Count == 0)
                         {
-                            MessageBox.Show("Không có sản phẩm nào cần nhập hàng!", "Thông báo",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            ErrorHandler.ShowSuccess("Không có sản phẩm nào cần nhập hàng!", "Thông báo");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải gợi ý nhập hàng");
             }
             finally
             {
@@ -126,8 +124,7 @@ namespace dbms
         {
             if (dgvSuggestions.Rows.Count == 0)
             {
-                MessageBox.Show("Không có dữ liệu để export!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Không có dữ liệu để export!", "⚠️ Không có dữ liệu");
                 return;
             }
 
@@ -173,14 +170,12 @@ namespace dbms
                         }
                     }
 
-                    MessageBox.Show($"Export thành công!\nFile: {sfd.FileName}", "Thành công",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess($"Export thành công!\nFile: {sfd.FileName}");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi export: {ex.Message}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "export dữ liệu");
             }
         }
 
@@ -188,8 +183,7 @@ namespace dbms
         {
             if (dgvSuggestions.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn sản phẩm!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn sản phẩm!", "⚠️ Chưa chọn sản phẩm");
                 return;
             }
 
@@ -213,13 +207,11 @@ namespace dbms
                     $"• Cần nhập hàng ngay để tránh hết hàng\n" +
                     $"• Dự trữ cho {numDaysToProject.Value} ngày tới";
 
-                MessageBox.Show(details, "Chi tiết Reorder Suggestion",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ErrorHandler.ShowSuccess(details, "Chi tiết Reorder Suggestion");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải gợi ý nhập hàng");
             }
         }
 
@@ -249,8 +241,7 @@ namespace dbms
    • Export: Xuất ra file CSV
    • View Details: Xem chi tiết sản phẩm";
 
-            MessageBox.Show(helpText, "Hướng dẫn",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ErrorHandler.ShowSuccess(helpText, "Hướng dẫn");
         }
     }
 }

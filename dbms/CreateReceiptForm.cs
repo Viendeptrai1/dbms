@@ -53,9 +53,13 @@ namespace dbms
                     connection.Close();
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách nhà cung cấp");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải nhà cung cấp: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách nhà cung cấp");
             }
         }
 
@@ -66,21 +70,21 @@ namespace dbms
                 // Validate input
                 if (string.IsNullOrEmpty(txtSKU.Text.Trim()))
                 {
-                    MessageBox.Show("Vui lòng nhập SKU!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập SKU!", "⚠️ Thiếu thông tin");
                     txtSKU.Focus();
                     return;
                 }
 
                 if (!int.TryParse(txtQuantity.Text, out int quantity) || quantity <= 0)
                 {
-                    MessageBox.Show("Vui lòng nhập số lượng hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập số lượng hợp lệ (> 0)!", "⚠️ Số lượng không hợp lệ");
                     txtQuantity.Focus();
                     return;
                 }
 
                 if (!decimal.TryParse(txtImportPrice.Text, out decimal importPrice) || importPrice <= 0)
                 {
-                    MessageBox.Show("Vui lòng nhập giá nhập hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập giá nhập hợp lệ (> 0)!", "⚠️ Giá nhập không hợp lệ");
                     txtImportPrice.Focus();
                     return;
                 }
@@ -101,9 +105,13 @@ namespace dbms
                 txtQuantity.Clear();
                 txtImportPrice.Clear();
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "thêm dòng sản phẩm");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi thêm dòng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "thêm dòng sản phẩm");
             }
         }
 
@@ -116,7 +124,7 @@ namespace dbms
             }
             else
             {
-                MessageBox.Show("Vui lòng chọn dòng cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn dòng cần xóa!", "⚠️ Chưa chọn dòng");
             }
         }
 
@@ -142,13 +150,13 @@ namespace dbms
                 // Validate input
                 if (cmbSupplier.SelectedIndex == -1)
                 {
-                    MessageBox.Show("Vui lòng chọn nhà cung cấp!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn nhà cung cấp!", "⚠️ Thiếu thông tin");
                     return;
                 }
 
                 if (receiptLines.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng thêm ít nhất một dòng sản phẩm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng thêm ít nhất một dòng sản phẩm!", "⚠️ Phiếu nhập trống");
                     return;
                 }
 
@@ -216,17 +224,28 @@ namespace dbms
                         var newReceiptID = command.Parameters["@ReceiptID"].Value;
                         var message = command.Parameters["@Message"].Value.ToString();
                         
-                        MessageBox.Show($"Tạo phiếu nhập thành công!\nReceiptID: {newReceiptID}\n{message}", 
-                            "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
+                        // Xử lý kết quả từ stored procedure
+                        if (message.ToLower().Contains("thành công"))
+                        {
+                            ErrorHandler.ShowSuccess($"Tạo phiếu nhập thành công!\nMã phiếu: {newReceiptID}");
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                        else
+                        {
+                            // Hiển thị lỗi từ stored procedure
+                            ErrorHandler.HandleStoredProcedureResult(message, "tạo phiếu nhập");
+                        }
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tạo phiếu nhập");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tạo phiếu nhập: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tạo phiếu nhập");
             }
         }
 

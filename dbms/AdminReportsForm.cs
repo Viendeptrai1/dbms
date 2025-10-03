@@ -27,7 +27,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khởi tạo dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "khởi tạo dữ liệu");
             }
         }
 
@@ -43,11 +43,16 @@ namespace dbms
                 LoadProductImportHistory();
                 LoadProductsNeverImported();
                 
+                // Load báo cáo hệ thống mới
+                LoadUsersRoleSummary();
+                LoadUserActivity();
+                LoadPriceHistory();
+                
                 toolStripStatusLabel1.Text = "Đã tải tất cả báo cáo thành công";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải báo cáo: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải báo cáo");
             }
         }
 
@@ -196,6 +201,102 @@ namespace dbms
             this.Close();
         }
 
+        private void LoadUsersRoleSummary()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("SELECT * FROM dbo.vw_UsersRoleSummary", connection))
+                    {
+                        var adapter = new SqlDataAdapter(command);
+                        var dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+                        
+                        dgvUsersRoleSummary.DataSource = dataTable;
+                        lblUsersRoleSummaryCount.Text = $"Tổng quan: {dataTable.Rows.Count} roles";
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tải tổng quan users");
+            }
+        }
+
+        private void LoadUserActivity()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("sp_GetUserActivityByDateRange", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@FromDate", DateTime.Now.AddDays(-30));
+                        command.Parameters.AddWithValue("@ToDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@Username", DBNull.Value);
+                        
+                        var adapter = new SqlDataAdapter(command);
+                        var dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+                        
+                        dgvUserActivity.DataSource = dataTable;
+                        
+                        // Tính tổng
+                        decimal totalAmount = 0;
+                        int totalReceipts = 0;
+                        foreach (DataRow row in dataTable.Rows)
+                        {
+                            totalAmount += Convert.ToDecimal(row["TotalAmount"]);
+                            totalReceipts += Convert.ToInt32(row["TotalReceipts"]);
+                        }
+                        
+                        lblUserActivityCount.Text = $"Hoạt động: {dataTable.Rows.Count} users | {totalReceipts} phiếu | {totalAmount:N0} VNĐ";
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tải hoạt động user");
+            }
+        }
+
+        private void LoadPriceHistory()
+        {
+            try
+            {
+                using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("sp_GetPriceHistoryByDateRange", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@FromDate", DateTime.Now.AddDays(-30));
+                        command.Parameters.AddWithValue("@ToDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@ProductID", DBNull.Value);
+                        command.Parameters.AddWithValue("@SKU", DBNull.Value);
+                        
+                        var adapter = new SqlDataAdapter(command);
+                        var dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+                        
+                        dgvPriceHistory.DataSource = dataTable;
+                        lblPriceHistoryCount.Text = $"Lịch sử giá: {dataTable.Rows.Count} thay đổi";
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tải lịch sử giá");
+            }
+        }
+
         private void btnTestAllSQL_Click(object sender, EventArgs e)
         {
             try
@@ -211,6 +312,9 @@ namespace dbms
                 results.Add("✅ vw_ProductsWithCategories - Sử dụng trong ProductSearchForm");
                 results.Add("✅ vw_InventoryValuation - Sử dụng trong báo cáo");
                 results.Add("✅ vw_ImportLines - Sử dụng trong báo cáo");
+                results.Add("✅ vw_UsersRoleSummary - Tổng quan users theo role");
+                results.Add("✅ vw_UserActivity - Hoạt động người dùng");
+                results.Add("✅ vw_ProductPriceHistory - Lịch sử thay đổi giá");
                 results.Add("");
                 
                 // Test Stored Procedures
@@ -219,6 +323,8 @@ namespace dbms
                 results.Add("✅ sp_BulkAdjustPriceByPercent - Sử dụng trong PriceAdjustForm");
                 results.Add("✅ sp_CreateGoodsReceipt - Sử dụng trong CreateReceiptForm");
                 results.Add("✅ sp_DeleteGoodsReceipt - Sử dụng trong SellerMainForm");
+                results.Add("✅ sp_GetUserActivityByDateRange - Báo cáo Admin");
+                results.Add("✅ sp_GetPriceHistoryByDateRange - Báo cáo Admin");
                 results.Add("");
                 
                 // Test Functions
@@ -244,13 +350,11 @@ namespace dbms
                 
                 results.Add("🎉 KẾT LUẬN: TẤT CẢ SQL OBJECTS ĐÃ ĐƯỢC SỬ DỤNG!");
                 
-                MessageBox.Show(string.Join("\n", results), "Kiểm tra SQL Objects", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ErrorHandler.ShowSuccess(string.Join("\n", results), "Kiểm tra SQL Objects");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kiểm tra SQL objects: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "kiểm tra SQL objects");
             }
         }
     }

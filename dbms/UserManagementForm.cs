@@ -38,9 +38,13 @@ namespace dbms
                 // Đặt tiêu đề form
                 this.Text = $"Quản lý User - {currentUsername} ({currentUserRole})";
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "khởi tạo dữ liệu");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khởi tạo dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "khởi tạo dữ liệu");
             }
         }
 
@@ -51,7 +55,7 @@ namespace dbms
                 using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand("sp_GetUsersWithRoles", connection))
+                    using (var command = new SqlCommand("sp_GetFullUserInfo", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         
@@ -64,25 +68,40 @@ namespace dbms
                         // Định dạng cột
                         if (dgvUsers.Columns.Count > 0)
                         {
-                            if (dgvUsers.Columns.Contains("IsActive"))
+                            if (dgvUsers.Columns.Contains("Status"))
                             {
-                                dgvUsers.Columns["IsActive"].DefaultCellStyle.ForeColor = Color.Green;
-                                dgvUsers.Columns["IsActive"].Width = 80;
+                                dgvUsers.Columns["Status"].Width = 100;
                             }
                             
-                            if (dgvUsers.Columns.Contains("Roles"))
-                                dgvUsers.Columns["Roles"].Width = 200;
+                            if (dgvUsers.Columns.Contains("AppRole"))
+                                dgvUsers.Columns["AppRole"].Width = 100;
                                 
                             if (dgvUsers.Columns.Contains("Username"))
                                 dgvUsers.Columns["Username"].Width = 150;
+                                
+                            if (dgvUsers.Columns.Contains("HasSQLLogin"))
+                            {
+                                dgvUsers.Columns["HasSQLLogin"].HeaderText = "SQL Login";
+                                dgvUsers.Columns["HasSQLLogin"].Width = 80;
+                            }
+                                
+                            if (dgvUsers.Columns.Contains("HasDBUser"))
+                            {
+                                dgvUsers.Columns["HasDBUser"].HeaderText = "DB User";
+                                dgvUsers.Columns["HasDBUser"].Width = 80;
+                            }
                         }
                     }
                     connection.Close();
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách user");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh sách user: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách user");
             }
         }
 
@@ -98,9 +117,13 @@ namespace dbms
                     cmbRoles.ValueMember = "RoleID";
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách roles");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh sách roles: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách roles");
             }
         }
 
@@ -114,9 +137,13 @@ namespace dbms
                     dgvUserRoles.DataSource = data;
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải user roles");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải user roles: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải user roles");
             }
         }
 
@@ -131,18 +158,18 @@ namespace dbms
 
                 if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(roleName))
                 {
-                    MessageBox.Show("Vui lòng điền đầy đủ thông tin!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng điền đầy đủ thông tin!", "Thiếu thông tin");
                     return;
                 }
 
                 using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
                 {
                     connection.Open();
-                    using (var command = new SqlCommand("sp_CreateUserWithRole", connection))
+                    using (var command = new SqlCommand("sp_CreateUserWithSQLLogin", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@Username", username);
-                        command.Parameters.AddWithValue("@Password", password); // Truyền password plain text
+                        command.Parameters.AddWithValue("@Password", password);
                         command.Parameters.AddWithValue("@FullName", fullName);
                         command.Parameters.AddWithValue("@RoleName", roleName);
                         command.Parameters.AddWithValue("@IsActive", true);
@@ -151,139 +178,40 @@ namespace dbms
                         newUserIDParam.Direction = ParameterDirection.Output;
                         command.Parameters.Add(newUserIDParam);
                         
-                        var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
+                        var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, -1);
                         messageParam.Direction = ParameterDirection.Output;
                         command.Parameters.Add(messageParam);
                         
                         command.ExecuteNonQuery();
                         
                         string resultMessage = messageParam.Value.ToString();
-                        int newUserID = (int)newUserIDParam.Value;
                         
-                        MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                            resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
-                        
-                        if (resultMessage.Contains("thành công"))
+                        // Xử lý kết quả từ stored procedure
+                        if (resultMessage.ToLower().Contains("thành công"))
                         {
+                            ErrorHandler.ShowSuccess(resultMessage);
                             // Clear form
                             txtUsername.Clear();
                             txtPassword.Clear();
                             txtFullName.Clear();
-                            cmbRoles.SelectedIndex = 0;
-                            
+                            cmbRoles.SelectedIndex = -1;
                             LoadUsers();
+                        }
+                        else
+                        {
+                            ErrorHandler.HandleStoredProcedureResult(resultMessage, "tạo user");
                         }
                     }
                     connection.Close();
                 }
             }
-            catch (Exception ex)
+            catch (SqlException sqlEx)
             {
-                MessageBox.Show("Lỗi tạo user: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnChangeRole_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (dgvUsers.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng chọn user cần thay đổi role!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
-                string newRole = cmbNewRole.Text;
-
-                if (string.IsNullOrEmpty(newRole))
-                {
-                    MessageBox.Show("Vui lòng chọn role mới!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                var result = MessageBox.Show($"Bạn có chắc muốn thay đổi role của '{username}' thành '{newRole}'?", 
-                    "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
-                    {
-                        connection.Open();
-                        using (var command = new SqlCommand("sp_ChangeUserRole", connection))
-                        {
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.Parameters.AddWithValue("@Username", username);
-                            command.Parameters.AddWithValue("@NewRoleName", newRole);
-                            
-                            var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
-                            messageParam.Direction = ParameterDirection.Output;
-                            command.Parameters.Add(messageParam);
-                            
-                            command.ExecuteNonQuery();
-                            
-                            string resultMessage = messageParam.Value.ToString();
-                            MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                                resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
-                            
-                            LoadUsers();
-                        }
-                        connection.Close();
-                    }
-                }
+                ErrorHandler.HandleSqlError(sqlEx, "tạo user");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi thay đổi role: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnToggleStatus_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (dgvUsers.SelectedRows.Count == 0)
-                {
-                    MessageBox.Show("Vui lòng chọn user cần thay đổi trạng thái!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
-                bool currentStatus = Convert.ToBoolean(dgvUsers.SelectedRows[0].Cells["IsActive"].Value);
-
-                string action = currentStatus ? "khóa" : "mở khóa";
-                var result = MessageBox.Show($"Bạn có chắc muốn {action} user '{username}'?", 
-                    "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (result == DialogResult.Yes)
-                {
-                    using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
-                    {
-                        connection.Open();
-                        using (var command = new SqlCommand("sp_ToggleUserStatus", connection))
-                        {
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.Parameters.AddWithValue("@Username", username);
-                            
-                            var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
-                            messageParam.Direction = ParameterDirection.Output;
-                            command.Parameters.Add(messageParam);
-                            
-                            command.ExecuteNonQuery();
-                            
-                            string resultMessage = messageParam.Value.ToString();
-                            MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                                resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
-                            
-                            LoadUsers();
-                        }
-                        connection.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi thay đổi trạng thái user: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tạo user");
             }
         }
 
@@ -293,16 +221,16 @@ namespace dbms
             {
                 if (dgvUsers.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng chọn user cần revoke quyền!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn user cần revoke quyền!", "Chưa chọn user");
                     return;
                 }
 
                 string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
 
-                var result = MessageBox.Show($"Bạn có chắc muốn REVOKE TẤT CẢ QUYỀN của user '{username}'?\n\nHành động này sẽ:\n- Xóa tất cả roles của user\n- Revoke tất cả database permissions\n- User sẽ không thể truy cập hệ thống!", 
-                    "CẢNH BÁO NGUY HIỂM", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var result = ErrorHandler.ShowConfirmation($"Bạn có chắc muốn REVOKE TẤT CẢ QUYỀN của user '{username}'?\n\nHành động này sẽ:\n- Xóa tất cả roles của user\n- Revoke tất cả database permissions\n- User sẽ không thể truy cập hệ thống!", 
+                    "CẢNH BÁO NGUY HIỂM");
 
-                if (result == DialogResult.Yes)
+                if (result)
                 {
                     using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
                     {
@@ -319,18 +247,29 @@ namespace dbms
                             command.ExecuteNonQuery();
                             
                             string resultMessage = messageParam.Value.ToString();
-                            MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                                resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
                             
-                            LoadUsers();
+                            // Xử lý kết quả từ stored procedure
+                            if (resultMessage.ToLower().Contains("thành công"))
+                            {
+                                ErrorHandler.ShowSuccess(resultMessage);
+                                LoadUsers();
+                            }
+                            else
+                            {
+                                ErrorHandler.HandleStoredProcedureResult(resultMessage, "revoke quyền user");
+                            }
                         }
                         connection.Close();
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "revoke quyền user");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi revoke quyền: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "revoke quyền user");
             }
         }
 
@@ -340,44 +279,156 @@ namespace dbms
             {
                 if (dgvUsers.SelectedRows.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng chọn user cần xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn user cần xóa!", "Chưa chọn user");
                     return;
                 }
 
                 string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
 
-                var result = MessageBox.Show($"Bạn có chắc muốn XÓA user '{username}'?\n\nHành động này sẽ:\n- Xóa user khỏi hệ thống\n- Xóa tất cả roles\n- Xóa database user\n- KHÔNG THỂ HOÀN TÁC!", 
-                    "CẢNH BÁO XÓA", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                if (result == DialogResult.Yes)
+                // DIALOG LỰA CHỌN HARD/SOFT DELETE
+                using (var deleteDialog = new Form())
                 {
-                    using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                    deleteDialog.Text = "Chọn loại xóa";
+                    deleteDialog.Size = new Size(500, 350);
+                    deleteDialog.StartPosition = FormStartPosition.CenterParent;
+                    deleteDialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    deleteDialog.MaximizeBox = false;
+                    deleteDialog.MinimizeBox = false;
+
+                    var lblTitle = new Label
                     {
-                        connection.Open();
-                        using (var command = new SqlCommand("sp_DeleteUser", connection))
+                        Text = $"Xóa user: {username}",
+                        Font = new Font("Microsoft YaHei UI", 12, FontStyle.Bold),
+                        Location = new Point(20, 20),
+                        Size = new Size(450, 30)
+                    };
+
+                    var grpSoft = new GroupBox
+                    {
+                        Text = "🔒 SOFT DELETE (Khuyến nghị)",
+                        Location = new Point(20, 60),
+                        Size = new Size(450, 90),
+                        Font = new Font("Microsoft YaHei UI", 9, FontStyle.Bold)
+                    };
+                    var lblSoft = new Label
+                    {
+                        Text = "• User không thể đăng nhập\n" +
+                               "• Dữ liệu được giữ lại (lịch sử)\n" +
+                               "• SQL Login bị DISABLE\n" +
+                               "• Có thể khôi phục sau",
+                        Location = new Point(10, 25),
+                        Size = new Size(430, 60),
+                        Font = new Font("Microsoft YaHei UI", 9)
+                    };
+                    grpSoft.Controls.Add(lblSoft);
+
+                    var grpHard = new GroupBox
+                    {
+                        Text = "HARD DELETE (Nguy hiểm)",
+                        Location = new Point(20, 160),
+                        Size = new Size(450, 90),
+                        Font = new Font("Microsoft YaHei UI", 9, FontStyle.Bold),
+                        ForeColor = Color.Red
+                    };
+                    var lblHard = new Label
+                    {
+                        Text = "• XÓA VĨNH VIỄN khỏi database\n" +
+                               "• SQL Login/User bị xóa\n" +
+                               "• Tất cả quyền bị thu hồi\n" +
+                               "• KHÔNG THỂ HOÀN TÁC!",
+                        Location = new Point(10, 25),
+                        Size = new Size(430, 60),
+                        Font = new Font("Microsoft YaHei UI", 9)
+                    };
+                    grpHard.Controls.Add(lblHard);
+
+                    var btnSoft = new Button
+                    {
+                        Text = "Soft Delete",
+                        Location = new Point(100, 270),
+                        Size = new Size(120, 35),
+                        DialogResult = DialogResult.Yes,
+                        Font = new Font("Microsoft YaHei UI", 10)
+                    };
+
+                    var btnHard = new Button
+                    {
+                        Text = "Hard Delete",
+                        Location = new Point(230, 270),
+                        Size = new Size(120, 35),
+                        DialogResult = DialogResult.Retry,
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        BackColor = Color.IndianRed
+                    };
+
+                    var btnCancel = new Button
+                    {
+                        Text = "Hủy",
+                        Location = new Point(360, 270),
+                        Size = new Size(100, 35),
+                        DialogResult = DialogResult.Cancel,
+                        Font = new Font("Microsoft YaHei UI", 10)
+                    };
+
+                    deleteDialog.Controls.AddRange(new Control[] { lblTitle, grpSoft, grpHard, btnSoft, btnHard, btnCancel });
+
+                    var dialogResult = deleteDialog.ShowDialog();
+
+                    if (dialogResult == DialogResult.Cancel)
+                        return;
+
+                    string deleteType = dialogResult == DialogResult.Yes ? "SOFT" : "HARD";
+
+                    // XÁC NHẬN LẦN CUỐI
+                    var confirmMsg = deleteType == "SOFT" 
+                        ? $"Xác nhận SOFT DELETE user '{username}'?" 
+                        : $"CẢNH BÁO\n\nBạn có CHẮC CHẮN muốn HARD DELETE user '{username}'?\n\nHành động này KHÔNG THỂ HOÀN TÁC!";
+
+                    var confirm = ErrorHandler.ShowConfirmation(confirmMsg, "Xác nhận xóa user");
+
+                    if (confirm)
+                    {
+                        using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
                         {
-                            command.CommandType = CommandType.StoredProcedure;
-                            command.Parameters.AddWithValue("@Username", username);
-                            
-                            var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
-                            messageParam.Direction = ParameterDirection.Output;
-                            command.Parameters.Add(messageParam);
-                            
-                            command.ExecuteNonQuery();
-                            
-                            string resultMessage = messageParam.Value.ToString();
-                            MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                                resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
-                            
-                            LoadUsers();
+                            connection.Open();
+                            using (var command = new SqlCommand("sp_DeleteUserComplete", connection))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Parameters.AddWithValue("@Username", username);
+                                command.Parameters.AddWithValue("@CurrentUsername", currentUsername);
+                                command.Parameters.AddWithValue("@DeleteType", deleteType);
+                                
+                                var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, -1);
+                                messageParam.Direction = ParameterDirection.Output;
+                                command.Parameters.Add(messageParam);
+                                
+                                command.ExecuteNonQuery();
+                                
+                                string resultMessage = messageParam.Value.ToString();
+                                
+                                // Xử lý kết quả từ stored procedure
+                                if (resultMessage.ToLower().Contains("thành công"))
+                                {
+                                    ErrorHandler.ShowSuccess(resultMessage);
+                                    LoadUsers();
+                                }
+                                else
+                                {
+                                    ErrorHandler.HandleStoredProcedureResult(resultMessage, "xóa user");
+                                }
+                            }
+                            connection.Close();
                         }
-                        connection.Close();
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "xóa user");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi xóa user: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "xóa user");
             }
         }
 
@@ -390,6 +441,102 @@ namespace dbms
         private void btnClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnChangeRole_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvUsers.SelectedRows.Count == 0)
+                {
+                    ErrorHandler.ShowWarning("Vui lòng chọn user cần thay đổi role!", "Chưa chọn user");
+                    return;
+                }
+
+                string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
+                string currentRole = dgvUsers.SelectedRows[0].Cells["AppRole"].Value?.ToString() ?? "";
+
+                // Mở form quản lý roles
+                using (var roleForm = new ManageUserRolesForm(username, currentRole))
+                {
+                    if (roleForm.ShowDialog() == DialogResult.OK)
+                    {
+                        LoadUsers();
+                        LoadUserRoles();
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "thay đổi role user");
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "thay đổi role user");
+            }
+        }
+
+        private void btnToggleStatus_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvUsers.SelectedRows.Count == 0)
+                {
+                    ErrorHandler.ShowWarning("Vui lòng chọn user cần thay đổi trạng thái!", "Chưa chọn user");
+                    return;
+                }
+
+                int userID = Convert.ToInt32(dgvUsers.SelectedRows[0].Cells["UserID"].Value);
+                string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
+                bool currentStatus = Convert.ToBoolean(dgvUsers.SelectedRows[0].Cells["IsActive"].Value);
+                
+                string action = currentStatus ? "vô hiệu hóa" : "kích hoạt";
+                
+                var result = ErrorHandler.ShowConfirmation($"Bạn có chắc muốn {action} user '{username}'?", 
+                    $"Xác nhận {action}");
+
+                if (result)
+                {
+                    using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                    {
+                        connection.Open();
+                        using (var command = new SqlCommand("sp_ToggleUserStatus", connection))
+                        {
+                            command.CommandType = CommandType.StoredProcedure;
+                            command.Parameters.AddWithValue("@UserID", userID);
+                            command.Parameters.AddWithValue("@CurrentUsername", currentUsername);
+                            
+                            var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
+                            messageParam.Direction = ParameterDirection.Output;
+                            command.Parameters.Add(messageParam);
+                            
+                            command.ExecuteNonQuery();
+                            
+                            string resultMessage = messageParam.Value.ToString();
+                            
+                            // Xử lý kết quả từ stored procedure
+                            if (resultMessage.ToLower().Contains("thành công"))
+                            {
+                                ErrorHandler.ShowSuccess(resultMessage);
+                                LoadUsers();
+                            }
+                            else
+                            {
+                                ErrorHandler.HandleStoredProcedureResult(resultMessage, "thay đổi trạng thái người dùng");
+                            }
+                        }
+                        connection.Close();
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "thay đổi trạng thái user");
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "thay đổi trạng thái user");
+            }
         }
 
     }

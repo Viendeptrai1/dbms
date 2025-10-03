@@ -7,3 +7,4 @@ C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.csproj.GenerateResource.cache
 C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.csproj.CoreCompileInputs.cache
 C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.exe
 C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.pdb
+C:\Users\LENOVO\Music\dbms\dbms\obj\Debug\dbms.exe.config

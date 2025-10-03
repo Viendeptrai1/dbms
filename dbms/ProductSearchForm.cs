@@ -47,7 +47,7 @@ namespace dbms
         {
             if (dgvProducts == null)
             {
-                MessageBox.Show("DataGridView chưa được khởi tạo!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.ShowWarning("DataGridView chưa được khởi tạo!", "⚠️ Lỗi khởi tạo");
                 return false;
             }
             return true;
@@ -81,7 +81,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi khi thiết lập styling cho DataGridView: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.HandleGeneralError(ex, "thiết lập styling cho DataGridView");
             }
         }
 
@@ -160,8 +160,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khởi tạo dữ liệu: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "khởi tạo dữ liệu");
             }
         }
 
@@ -188,14 +187,13 @@ namespace dbms
                     }
                     else
                     {
-                        MessageBox.Show("Không có dữ liệu sản phẩm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        ErrorHandler.ShowWarning("Không có dữ liệu sản phẩm!", "⚠️ Không có dữ liệu");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh sách sản phẩm: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách sản phẩm");
             }
         }
 
@@ -229,8 +227,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh mục: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh mục");
             }
         }
 
@@ -265,8 +262,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tìm kiếm");
             }
         }
 
@@ -318,8 +314,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi lọc theo danh mục: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "lọc theo danh mục");
             }
         }
 
@@ -361,8 +356,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tìm kiếm");
             }
         }
 

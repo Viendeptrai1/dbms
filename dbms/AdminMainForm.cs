@@ -52,7 +52,7 @@ namespace dbms
             {
                 lblConnectionStatus.Text = "Kết nối: Lỗi - " + ex.Message;
                 lblConnectionStatus.ForeColor = Color.Red;
-                MessageBox.Show("Lỗi kết nối database: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "kết nối database");
             }
         }
 
@@ -68,7 +68,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải dữ liệu");
             }
         }
 
@@ -98,17 +98,17 @@ namespace dbms
                     {
                         LoadUsers();
                         LoadUsersRoles();
-                        MessageBox.Show("Cập nhật vai trò thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ErrorHandler.ShowSuccess("Cập nhật vai trò thành công!");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Vui lòng chọn người dùng cần quản lý vai trò!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn người dùng cần quản lý vai trò!", "⚠️ Chưa chọn người dùng");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi quản lý vai trò: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "quản lý vai trò");
             }
         }
 
@@ -125,10 +125,10 @@ namespace dbms
                     var newStatus = !isActive;
                     var action = newStatus ? "kích hoạt" : "khóa";
                     
-                    var result = MessageBox.Show($"Bạn có chắc muốn {action} tài khoản '{username}'?", 
-                        "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    var result = ErrorHandler.ShowConfirmation($"Bạn có chắc muốn {action} tài khoản '{username}'?", 
+                        $"Xác nhận {action} tài khoản");
                     
-                    if (result == DialogResult.Yes)
+                    if (result)
                     {
                         // Sử dụng stored procedure mới
                         using (var command = new SqlCommand("sp_ToggleUserStatus", connection))
@@ -145,21 +145,22 @@ namespace dbms
                             connection.Close();
 
                             string resultMessage = messageParam.Value.ToString();
-                            MessageBox.Show(resultMessage, "Kết quả", MessageBoxButtons.OK, 
-                                resultMessage.Contains("thành công") ? MessageBoxIcon.Information : MessageBoxIcon.Error);
-                            
-                            LoadUsers();
+                            // Sử dụng ErrorHandler để xử lý kết quả
+                            if (ErrorHandler.HandleStoredProcedureResult(resultMessage, "thay đổi trạng thái người dùng"))
+                            {
+                                LoadUsers();
+                            }
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Vui lòng chọn người dùng cần thay đổi trạng thái!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn người dùng cần thay đổi trạng thái!", "⚠️ Chưa chọn người dùng");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi thay đổi trạng thái người dùng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "thay đổi trạng thái người dùng");
             }
             finally
             {
@@ -178,7 +179,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form tra cứu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form tra cứu");
             }
         }
 
@@ -190,12 +191,12 @@ namespace dbms
                 if (addProductForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadUsers(); // Refresh data
-                    MessageBox.Show("Thêm sản phẩm thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Thêm sản phẩm thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form thêm sản phẩm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form thêm sản phẩm");
             }
         }
 
@@ -207,12 +208,12 @@ namespace dbms
                 if (priceAdjustForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadUsers(); // Refresh data
-                    MessageBox.Show("Điều chỉnh giá thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Điều chỉnh giá thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form điều chỉnh giá: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form điều chỉnh giá");
             }
         }
 
@@ -224,12 +225,12 @@ namespace dbms
                 if (createReceiptForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadUsers(); // Refresh data
-                    MessageBox.Show("Tạo phiếu nhập thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Tạo phiếu nhập thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form tạo phiếu nhập: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form tạo phiếu nhập");
             }
         }
 
@@ -242,7 +243,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form báo cáo: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form báo cáo");
             }
         }
 
@@ -256,7 +257,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi mở form quản lý user: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "mở form quản lý user");
             }
         }
         #endregion
@@ -264,10 +265,9 @@ namespace dbms
         #region Menu Events
         private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("Bạn có chắc muốn đăng xuất?", "Xác nhận", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var result = ErrorHandler.ShowConfirmation("Bạn có chắc muốn đăng xuất?", "Xác nhận đăng xuất");
             
-            if (result == DialogResult.Yes)
+            if (result)
             {
                 this.Close();
                 Application.Restart();
@@ -276,10 +276,9 @@ namespace dbms
 
         private void thoátToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show("Bạn có chắc muốn thoát ứng dụng?", "Xác nhận", 
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var result = ErrorHandler.ShowConfirmation("Bạn có chắc muốn thoát ứng dụng?", "Xác nhận thoát");
             
-            if (result == DialogResult.Yes)
+            if (result)
             {
                 Application.Exit();
             }
@@ -320,7 +319,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải người dùng: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải người dùng");
             }
         }
 
@@ -336,7 +335,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải vai trò: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải vai trò");
             }
         }
 
@@ -352,7 +351,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải phân quyền: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải phân quyền");
             }
         }
         #endregion

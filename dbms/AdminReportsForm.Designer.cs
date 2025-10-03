@@ -24,6 +24,9 @@ namespace dbms
             this.tabSupplierSummary = new System.Windows.Forms.TabPage();
             this.tabProductHistory = new System.Windows.Forms.TabPage();
             this.tabNeverImported = new System.Windows.Forms.TabPage();
+            this.tabUsersRoleSummary = new System.Windows.Forms.TabPage();
+            this.tabUserActivity = new System.Windows.Forms.TabPage();
+            this.tabPriceHistory = new System.Windows.Forms.TabPage();
             
             // Tab Inventory
             this.dgvInventoryValuation = new System.Windows.Forms.DataGridView();
@@ -49,6 +52,18 @@ namespace dbms
             this.dgvProductsNeverImported = new System.Windows.Forms.DataGridView();
             this.lblProductsNeverImportedCount = new System.Windows.Forms.Label();
             
+            // Tab Users Role Summary
+            this.dgvUsersRoleSummary = new System.Windows.Forms.DataGridView();
+            this.lblUsersRoleSummaryCount = new System.Windows.Forms.Label();
+            
+            // Tab User Activity
+            this.dgvUserActivity = new System.Windows.Forms.DataGridView();
+            this.lblUserActivityCount = new System.Windows.Forms.Label();
+            
+            // Tab Price History
+            this.dgvPriceHistory = new System.Windows.Forms.DataGridView();
+            this.lblPriceHistoryCount = new System.Windows.Forms.Label();
+            
             // Controls
             this.btnRefreshAll = new System.Windows.Forms.Button();
             this.btnTestAllSQL = new System.Windows.Forms.Button();
@@ -63,12 +78,18 @@ namespace dbms
             this.tabSupplierSummary.SuspendLayout();
             this.tabProductHistory.SuspendLayout();
             this.tabNeverImported.SuspendLayout();
+            this.tabUsersRoleSummary.SuspendLayout();
+            this.tabUserActivity.SuspendLayout();
+            this.tabPriceHistory.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventoryValuation)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvImportLines)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupplierSummary)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductImportHistory)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductsNeverImported)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsersRoleSummary)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUserActivity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPriceHistory)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             
@@ -79,6 +100,9 @@ namespace dbms
             this.tabControl1.Controls.Add(this.tabSupplierSummary);
             this.tabControl1.Controls.Add(this.tabProductHistory);
             this.tabControl1.Controls.Add(this.tabNeverImported);
+            this.tabControl1.Controls.Add(this.tabUsersRoleSummary);
+            this.tabControl1.Controls.Add(this.tabUserActivity);
+            this.tabControl1.Controls.Add(this.tabPriceHistory);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -278,6 +302,102 @@ namespace dbms
             this.lblProductsNeverImportedCount.TabIndex = 1;
             this.lblProductsNeverImportedCount.Text = "Chưa nhập: 0";
             
+            // tabUsersRoleSummary
+            this.tabUsersRoleSummary.Controls.Add(this.dgvUsersRoleSummary);
+            this.tabUsersRoleSummary.Controls.Add(this.lblUsersRoleSummaryCount);
+            this.tabUsersRoleSummary.Location = new System.Drawing.Point(4, 25);
+            this.tabUsersRoleSummary.Name = "tabUsersRoleSummary";
+            this.tabUsersRoleSummary.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUsersRoleSummary.Size = new System.Drawing.Size(992, 571);
+            this.tabUsersRoleSummary.TabIndex = 6;
+            this.tabUsersRoleSummary.Text = "Users theo Role";
+            this.tabUsersRoleSummary.UseVisualStyleBackColor = true;
+            
+            // dgvUsersRoleSummary
+            this.dgvUsersRoleSummary.AllowUserToAddRows = false;
+            this.dgvUsersRoleSummary.AllowUserToDeleteRows = false;
+            this.dgvUsersRoleSummary.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUsersRoleSummary.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUsersRoleSummary.Location = new System.Drawing.Point(3, 3);
+            this.dgvUsersRoleSummary.Name = "dgvUsersRoleSummary";
+            this.dgvUsersRoleSummary.ReadOnly = true;
+            this.dgvUsersRoleSummary.Size = new System.Drawing.Size(986, 565);
+            this.dgvUsersRoleSummary.TabIndex = 0;
+            
+            // lblUsersRoleSummaryCount
+            this.lblUsersRoleSummaryCount.AutoSize = true;
+            this.lblUsersRoleSummaryCount.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUsersRoleSummaryCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(123)))), ((int)(((byte)(255)))));
+            this.lblUsersRoleSummaryCount.Location = new System.Drawing.Point(6, 540);
+            this.lblUsersRoleSummaryCount.Name = "lblUsersRoleSummaryCount";
+            this.lblUsersRoleSummaryCount.Size = new System.Drawing.Size(100, 20);
+            this.lblUsersRoleSummaryCount.TabIndex = 1;
+            this.lblUsersRoleSummaryCount.Text = "Tổng quan: 0 roles";
+            
+            // tabUserActivity
+            this.tabUserActivity.Controls.Add(this.dgvUserActivity);
+            this.tabUserActivity.Controls.Add(this.lblUserActivityCount);
+            this.tabUserActivity.Location = new System.Drawing.Point(4, 25);
+            this.tabUserActivity.Name = "tabUserActivity";
+            this.tabUserActivity.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUserActivity.Size = new System.Drawing.Size(992, 571);
+            this.tabUserActivity.TabIndex = 7;
+            this.tabUserActivity.Text = "Hoạt động User";
+            this.tabUserActivity.UseVisualStyleBackColor = true;
+            
+            // dgvUserActivity
+            this.dgvUserActivity.AllowUserToAddRows = false;
+            this.dgvUserActivity.AllowUserToDeleteRows = false;
+            this.dgvUserActivity.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvUserActivity.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvUserActivity.Location = new System.Drawing.Point(3, 3);
+            this.dgvUserActivity.Name = "dgvUserActivity";
+            this.dgvUserActivity.ReadOnly = true;
+            this.dgvUserActivity.Size = new System.Drawing.Size(986, 565);
+            this.dgvUserActivity.TabIndex = 0;
+            
+            // lblUserActivityCount
+            this.lblUserActivityCount.AutoSize = true;
+            this.lblUserActivityCount.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblUserActivityCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(123)))), ((int)(((byte)(255)))));
+            this.lblUserActivityCount.Location = new System.Drawing.Point(6, 540);
+            this.lblUserActivityCount.Name = "lblUserActivityCount";
+            this.lblUserActivityCount.Size = new System.Drawing.Size(100, 20);
+            this.lblUserActivityCount.TabIndex = 1;
+            this.lblUserActivityCount.Text = "Hoạt động: 0 users";
+            
+            // tabPriceHistory
+            this.tabPriceHistory.Controls.Add(this.dgvPriceHistory);
+            this.tabPriceHistory.Controls.Add(this.lblPriceHistoryCount);
+            this.tabPriceHistory.Location = new System.Drawing.Point(4, 25);
+            this.tabPriceHistory.Name = "tabPriceHistory";
+            this.tabPriceHistory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPriceHistory.Size = new System.Drawing.Size(992, 571);
+            this.tabPriceHistory.TabIndex = 8;
+            this.tabPriceHistory.Text = "Lịch sử Giá";
+            this.tabPriceHistory.UseVisualStyleBackColor = true;
+            
+            // dgvPriceHistory
+            this.dgvPriceHistory.AllowUserToAddRows = false;
+            this.dgvPriceHistory.AllowUserToDeleteRows = false;
+            this.dgvPriceHistory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvPriceHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvPriceHistory.Location = new System.Drawing.Point(3, 3);
+            this.dgvPriceHistory.Name = "dgvPriceHistory";
+            this.dgvPriceHistory.ReadOnly = true;
+            this.dgvPriceHistory.Size = new System.Drawing.Size(986, 565);
+            this.dgvPriceHistory.TabIndex = 0;
+            
+            // lblPriceHistoryCount
+            this.lblPriceHistoryCount.AutoSize = true;
+            this.lblPriceHistoryCount.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F, System.Drawing.FontStyle.Bold);
+            this.lblPriceHistoryCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(123)))), ((int)(((byte)(255)))));
+            this.lblPriceHistoryCount.Location = new System.Drawing.Point(6, 540);
+            this.lblPriceHistoryCount.Name = "lblPriceHistoryCount";
+            this.lblPriceHistoryCount.Size = new System.Drawing.Size(100, 20);
+            this.lblPriceHistoryCount.TabIndex = 1;
+            this.lblPriceHistoryCount.Text = "Lịch sử giá: 0";
+            
             // btnRefreshAll
             this.btnRefreshAll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
             this.btnRefreshAll.FlatAppearance.BorderSize = 0;
@@ -366,12 +486,21 @@ namespace dbms
             this.tabProductHistory.PerformLayout();
             this.tabNeverImported.ResumeLayout(false);
             this.tabNeverImported.PerformLayout();
+            this.tabUsersRoleSummary.ResumeLayout(false);
+            this.tabUsersRoleSummary.PerformLayout();
+            this.tabUserActivity.ResumeLayout(false);
+            this.tabUserActivity.PerformLayout();
+            this.tabPriceHistory.ResumeLayout(false);
+            this.tabPriceHistory.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventoryValuation)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvImportLines)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopProducts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSupplierSummary)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductImportHistory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductsNeverImported)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUsersRoleSummary)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvUserActivity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPriceHistory)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -387,6 +516,9 @@ namespace dbms
         private System.Windows.Forms.TabPage tabSupplierSummary;
         private System.Windows.Forms.TabPage tabProductHistory;
         private System.Windows.Forms.TabPage tabNeverImported;
+        private System.Windows.Forms.TabPage tabUsersRoleSummary;
+        private System.Windows.Forms.TabPage tabUserActivity;
+        private System.Windows.Forms.TabPage tabPriceHistory;
         
         // DataGridViews
         private System.Windows.Forms.DataGridView dgvInventoryValuation;
@@ -395,6 +527,9 @@ namespace dbms
         private System.Windows.Forms.DataGridView dgvSupplierSummary;
         private System.Windows.Forms.DataGridView dgvProductImportHistory;
         private System.Windows.Forms.DataGridView dgvProductsNeverImported;
+        private System.Windows.Forms.DataGridView dgvUsersRoleSummary;
+        private System.Windows.Forms.DataGridView dgvUserActivity;
+        private System.Windows.Forms.DataGridView dgvPriceHistory;
         
         // Labels
         private System.Windows.Forms.Label lblInventoryCount;
@@ -403,6 +538,9 @@ namespace dbms
         private System.Windows.Forms.Label lblSupplierSummaryCount;
         private System.Windows.Forms.Label lblProductImportHistoryCount;
         private System.Windows.Forms.Label lblProductsNeverImportedCount;
+        private System.Windows.Forms.Label lblUsersRoleSummaryCount;
+        private System.Windows.Forms.Label lblUserActivityCount;
+        private System.Windows.Forms.Label lblPriceHistoryCount;
         
         // Buttons
         private System.Windows.Forms.Button btnRefreshAll;

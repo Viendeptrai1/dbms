@@ -38,10 +38,13 @@ namespace dbms
                     cmbSupplier.SelectedIndex = -1;
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách nhà cung cấp");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi load suppliers: {ex.Message}", "Lỗi", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách nhà cung cấp");
             }
         }
 
@@ -49,8 +52,7 @@ namespace dbms
         {
             if (cmbSupplier.SelectedIndex < 0)
             {
-                MessageBox.Show("Vui lòng chọn nhà cung cấp!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn nhà cung cấp!", "⚠️ Thiếu thông tin");
                 return;
             }
 
@@ -94,9 +96,13 @@ namespace dbms
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "phân tích nhà cung cấp");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "phân tích nhà cung cấp");
             }
             finally
             {
@@ -246,9 +252,13 @@ namespace dbms
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "phân tích nhà cung cấp");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "phân tích nhà cung cấp");
             }
             finally
             {

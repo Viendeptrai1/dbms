@@ -76,6 +76,7 @@
     <Compile Include="CreateReceiptForm.Designer.cs">
       <DependentUpon>CreateReceiptForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ErrorHandler.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,7 +98,10 @@
     <Compile Include="ProductSearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
-      <Compile Include="SmartPricingForm.cs">
+    <Compile Include="ProductSearchForm.Designer.cs">
+      <DependentUpon>ProductSearchForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SmartPricingForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SmartPricingForm.Designer.cs">
@@ -109,9 +113,6 @@
     <Compile Include="ReorderSuggestionsForm.Designer.cs">
       <DependentUpon>ReorderSuggestionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProductSearchForm.Designer.cs">
-      <DependentUpon>ProductSearchForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SellerMainForm.cs">
@@ -120,7 +121,7 @@
     <Compile Include="SellerMainForm.Designer.cs">
       <DependentUpon>SellerMainForm.cs</DependentUpon>
     </Compile>
-      <Compile Include="AdvancedAnalyticsForm.cs">
+    <Compile Include="AdvancedAnalyticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AdvancedAnalyticsForm.Designer.cs">

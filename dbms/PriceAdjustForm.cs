@@ -43,9 +43,13 @@ namespace dbms
                     connection.Close();
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách danh mục");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh mục: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách danh mục");
             }
         }
 
@@ -56,14 +60,14 @@ namespace dbms
                 // Validate input
                 if (!decimal.TryParse(txtPercent.Text, out decimal percent))
                 {
-                    MessageBox.Show("Vui lòng nhập phần trăm hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập phần trăm hợp lệ!", "⚠️ Phần trăm không hợp lệ");
                     txtPercent.Focus();
                     return;
                 }
 
                 if (cmbCategory.SelectedIndex == -1)
                 {
-                    MessageBox.Show("Vui lòng chọn danh mục!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn danh mục!", "⚠️ Thiếu thông tin");
                     return;
                 }
 
@@ -97,7 +101,7 @@ namespace dbms
 
                     if (skuTable.Rows.Count == 0)
                     {
-                        MessageBox.Show("Không tìm thấy sản phẩm nào trong danh mục này!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        ErrorHandler.ShowWarning("Không tìm thấy sản phẩm nào trong danh mục này!", "⚠️ Danh mục trống");
                         connection.Close();
                         return;
                     }
@@ -119,17 +123,30 @@ namespace dbms
                         command.ExecuteNonQuery();
 
                         var message = command.Parameters["@Message"].Value.ToString();
-                        MessageBox.Show($"Điều chỉnh giá thành công!\n{message}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
+                        // Xử lý kết quả từ stored procedure
+                        if (message.ToLower().Contains("thành công"))
+                        {
+                            ErrorHandler.ShowSuccess(message);
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                        else
+                        {
+                            // Hiển thị lỗi từ stored procedure
+                            ErrorHandler.HandleStoredProcedureResult(message, "điều chỉnh giá");
+                        }
                     }
                     connection.Close();
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "điều chỉnh giá");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi điều chỉnh giá: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "điều chỉnh giá");
             }
         }
 

@@ -90,7 +90,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "phân tích ABC");
             }
             finally
             {
@@ -155,7 +155,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "phân tích ABC");
             }
             finally
             {
@@ -169,8 +169,7 @@ namespace dbms
         {
             if (dgvABC.SelectedRows.Count == 0 && dgvTurnover.SelectedRows.Count == 0)
             {
-                MessageBox.Show("Vui lòng chọn sản phẩm từ tab ABC hoặc Turnover!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                ErrorHandler.ShowWarning("Vui lòng chọn sản phẩm từ tab ABC hoặc Turnover!", "⚠️ Chưa chọn sản phẩm");
                 return;
             }
 
@@ -235,7 +234,7 @@ namespace dbms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "phân tích ABC");
             }
         }
         #endregion
@@ -288,12 +287,12 @@ namespace dbms
                         }
                     }
 
-                    MessageBox.Show("Export thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ErrorHandler.ShowSuccess("Export thành công!");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi export: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "export dữ liệu");
             }
         }
     }

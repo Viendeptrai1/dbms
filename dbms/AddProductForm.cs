@@ -43,9 +43,13 @@ namespace dbms
                     connection.Close();
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tải danh sách danh mục");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh mục: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "tải danh sách danh mục");
             }
         }
 
@@ -56,29 +60,28 @@ namespace dbms
                 // Validate input
                 if (string.IsNullOrEmpty(txtSKU.Text.Trim()))
                 {
-                    MessageBox.Show("Vui lòng nhập SKU!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập SKU!", "⚠️ Thiếu thông tin");
                     txtSKU.Focus();
                     return;
                 }
 
                 if (string.IsNullOrEmpty(txtProductName.Text.Trim()))
                 {
-                    MessageBox.Show("Vui lòng nhập tên sản phẩm!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập tên sản phẩm!", "⚠️ Thiếu thông tin");
                     txtProductName.Focus();
                     return;
                 }
 
                 if (!decimal.TryParse(txtSellingPrice.Text, out decimal sellingPrice) || sellingPrice <= 0)
                 {
-                    MessageBox.Show("Vui lòng nhập giá bán hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng nhập giá bán hợp lệ (> 0)!", "⚠️ Giá bán không hợp lệ");
                     txtSellingPrice.Focus();
                     return;
                 }
 
-
                 if (clbCategories.CheckedItems.Count == 0)
                 {
-                    MessageBox.Show("Vui lòng chọn ít nhất một danh mục!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    ErrorHandler.ShowWarning("Vui lòng chọn ít nhất một danh mục!", "⚠️ Thiếu danh mục");
                     return;
                 }
 
@@ -114,17 +117,29 @@ namespace dbms
 
                         var newProductID = command.Parameters["@ProductID"].Value;
                         var message = command.Parameters["@Message"].Value.ToString();
-                        MessageBox.Show($"Thêm sản phẩm thành công!\nProductID: {newProductID}\n{message}", 
-                            "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
+                        // Xử lý kết quả từ stored procedure
+                        if (message.ToLower().Contains("thành công"))
+                        {
+                            ErrorHandler.ShowSuccess($"Thêm sản phẩm thành công!\nMã sản phẩm: {newProductID}");
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                        else
+                        {
+                            // Hiển thị lỗi từ stored procedure
+                            ErrorHandler.HandleStoredProcedureResult(message, "thêm sản phẩm");
+                        }
                     }
                 }
             }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "thêm sản phẩm");
+            }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi thêm sản phẩm: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ErrorHandler.HandleGeneralError(ex, "thêm sản phẩm");
             }
         }
 
