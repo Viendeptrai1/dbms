@@ -152,6 +152,12 @@
     <Compile Include="ProductPerformanceDashboardForm.Designer.cs">
       <DependentUpon>ProductPerformanceDashboardForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BatchImportReceiptsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BatchImportReceiptsForm.Designer.cs">
+      <DependentUpon>BatchImportReceiptsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="QLNhapHangDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

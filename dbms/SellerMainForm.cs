@@ -63,7 +63,7 @@ namespace dbms
                 LoadProducts();
                 LoadCategories();
                 LoadGoodsReceipts();
-                LoadGoodsReceiptDetails();
+                // LoadGoodsReceiptDetails(); // ❌ DISABLED: Database không có cột ExpiryDate
                 LoadSuppliers();
                 
                 toolStripStatusLabel1.Text = "Dữ liệu đã được tải thành công";
@@ -130,7 +130,7 @@ namespace dbms
                 if (createReceiptForm.ShowDialog() == DialogResult.OK)
                 {
                     LoadGoodsReceipts();
-                    LoadGoodsReceiptDetails();
+                    // LoadGoodsReceiptDetails(); // ❌ DISABLED: Database không có cột ExpiryDate
                     LoadProducts(); // Refresh để thấy tồn kho mới
                     ErrorHandler.ShowSuccess("Tạo phiếu nhập thành công!");
                 }
@@ -166,7 +166,7 @@ namespace dbms
                             MessageBox.Show("Xóa phiếu nhập thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             
                             LoadGoodsReceipts();
-                            LoadGoodsReceiptDetails();
+                            // LoadGoodsReceiptDetails(); // ❌ DISABLED: Database không có cột ExpiryDate
                             LoadProducts();
                         }
                     }
@@ -189,7 +189,7 @@ namespace dbms
         private void btnRefreshReceipts_Click(object sender, EventArgs e)
         {
             LoadGoodsReceipts();
-            LoadGoodsReceiptDetails();
+            // LoadGoodsReceiptDetails(); // ❌ DISABLED: Database không có cột ExpiryDate
         }
         #endregion
 
@@ -447,6 +447,22 @@ namespace dbms
             catch (Exception ex)
             {
                 MessageBox.Show($"Lỗi mở Supplier Analysis: {ex.Message}", "Lỗi", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnBatchImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BatchImportReceiptsForm form = new BatchImportReceiptsForm(currentUserID, currentUsername);
+                form.ShowDialog();
+                // Refresh data sau khi batch import
+                LoadGoodsReceipts();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Lỗi mở Batch Import: {ex.Message}", "Lỗi", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

@@ -36,6 +36,7 @@ namespace dbms
             this.btnOpenAddProduct = new System.Windows.Forms.Button();
             this.btnOpenPriceAdjust = new System.Windows.Forms.Button();
             this.btnOpenCreateReceipt = new System.Windows.Forms.Button();
+            this.btnBatchImport = new System.Windows.Forms.Button();
             this.btnOpenReports = new System.Windows.Forms.Button();
             this.btnUserManagement = new System.Windows.Forms.Button();
             
@@ -108,6 +109,7 @@ namespace dbms
             this.tabUserManagement.Controls.Add(this.btnOpenAddProduct);
             this.tabUserManagement.Controls.Add(this.btnOpenPriceAdjust);
             this.tabUserManagement.Controls.Add(this.btnOpenCreateReceipt);
+            this.tabUserManagement.Controls.Add(this.btnBatchImport);
             this.tabUserManagement.Controls.Add(this.btnOpenReports);
             this.tabUserManagement.Controls.Add(this.btnUserManagement);
             this.tabUserManagement.Location = new System.Drawing.Point(4, 25);
@@ -235,6 +237,19 @@ namespace dbms
             this.btnOpenCreateReceipt.UseVisualStyleBackColor = false;
             this.btnOpenCreateReceipt.Click += new System.EventHandler(this.btnOpenCreateReceipt_Click);
             
+            // btnBatchImport
+            this.btnBatchImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnBatchImport.FlatAppearance.BorderSize = 0;
+            this.btnBatchImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBatchImport.ForeColor = System.Drawing.Color.White;
+            this.btnBatchImport.Location = new System.Drawing.Point(420, 500);
+            this.btnBatchImport.Name = "btnBatchImport";
+            this.btnBatchImport.Size = new System.Drawing.Size(120, 30);
+            this.btnBatchImport.TabIndex = 12;
+            this.btnBatchImport.Text = "Batch Import";
+            this.btnBatchImport.UseVisualStyleBackColor = false;
+            this.btnBatchImport.Click += new System.EventHandler(this.btnBatchImport_Click);
+            
             // btnOpenReports
             this.btnOpenReports.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(111)))), ((int)(((byte)(66)))), ((int)(((byte)(193)))));
             this.btnOpenReports.FlatAppearance.BorderSize = 0;
@@ -345,6 +360,7 @@ namespace dbms
         private System.Windows.Forms.Button btnOpenAddProduct;
         private System.Windows.Forms.Button btnOpenPriceAdjust;
         private System.Windows.Forms.Button btnOpenCreateReceipt;
+        private System.Windows.Forms.Button btnBatchImport;
         private System.Windows.Forms.Button btnOpenReports;
         private System.Windows.Forms.Button btnUserManagement;
         

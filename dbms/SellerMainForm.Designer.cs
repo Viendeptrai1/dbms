@@ -44,6 +44,7 @@ namespace dbms
             this.dgvGoodsReceipts = new System.Windows.Forms.DataGridView();
             this.dgvGoodsReceiptDetails = new System.Windows.Forms.DataGridView();
             this.btnCreateReceipt = new System.Windows.Forms.Button();
+            this.btnBatchImport = new System.Windows.Forms.Button();
             this.btnDeleteReceipt = new System.Windows.Forms.Button();
             this.btnRefreshReceipts = new System.Windows.Forms.Button();
             
@@ -234,6 +235,7 @@ namespace dbms
             this.tabGoodsReceipt.Controls.Add(this.dgvGoodsReceipts);
             this.tabGoodsReceipt.Controls.Add(this.dgvGoodsReceiptDetails);
             this.tabGoodsReceipt.Controls.Add(this.btnCreateReceipt);
+            this.tabGoodsReceipt.Controls.Add(this.btnBatchImport);
             this.tabGoodsReceipt.Controls.Add(this.btnDeleteReceipt);
             this.tabGoodsReceipt.Controls.Add(this.btnRefreshReceipts);
             this.tabGoodsReceipt.Location = new System.Drawing.Point(4, 25);
@@ -272,6 +274,19 @@ namespace dbms
             this.btnCreateReceipt.Text = "Tạo phiếu nhập";
             this.btnCreateReceipt.UseVisualStyleBackColor = true;
             this.btnCreateReceipt.Click += new System.EventHandler(this.btnCreateReceipt_Click);
+            
+            // btnBatchImport
+            this.btnBatchImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(53)))), ((int)(((byte)(69)))));
+            this.btnBatchImport.FlatAppearance.BorderSize = 0;
+            this.btnBatchImport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBatchImport.ForeColor = System.Drawing.Color.White;
+            this.btnBatchImport.Location = new System.Drawing.Point(6, 460);
+            this.btnBatchImport.Name = "btnBatchImport";
+            this.btnBatchImport.Size = new System.Drawing.Size(120, 30);
+            this.btnBatchImport.TabIndex = 5;
+            this.btnBatchImport.Text = "Batch Import";
+            this.btnBatchImport.UseVisualStyleBackColor = false;
+            this.btnBatchImport.Click += new System.EventHandler(this.btnBatchImport_Click);
             
             // btnDeleteReceipt
             this.btnDeleteReceipt.Location = new System.Drawing.Point(140, 420);
@@ -472,6 +487,7 @@ namespace dbms
         private System.Windows.Forms.DataGridView dgvGoodsReceipts;
         private System.Windows.Forms.DataGridView dgvGoodsReceiptDetails;
         private System.Windows.Forms.Button btnCreateReceipt;
+        private System.Windows.Forms.Button btnBatchImport;
         private System.Windows.Forms.Button btnDeleteReceipt;
         private System.Windows.Forms.Button btnRefreshReceipts;
         

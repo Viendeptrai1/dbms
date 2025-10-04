@@ -456,8 +456,8 @@ namespace dbms
                 string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
                 string currentRole = dgvUsers.SelectedRows[0].Cells["AppRole"].Value?.ToString() ?? "";
 
-                // Mở form quản lý roles
-                using (var roleForm = new ManageUserRolesForm(username, currentRole))
+                // Mở form quản lý roles với admin username
+                using (var roleForm = new ManageUserRolesForm(username, currentRole, currentUsername))
                 {
                     if (roleForm.ShowDialog() == DialogResult.OK)
                     {
@@ -536,6 +536,166 @@ namespace dbms
             catch (Exception ex)
             {
                 ErrorHandler.HandleGeneralError(ex, "thay đổi trạng thái user");
+            }
+        }
+
+        private void btnCreateSQLLogin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dgvUsers.SelectedRows.Count == 0)
+                {
+                    ErrorHandler.ShowWarning("Vui lòng chọn user cần tạo SQL Login!", "Chưa chọn user");
+                    return;
+                }
+
+                string username = dgvUsers.SelectedRows[0].Cells["Username"].Value.ToString();
+                bool hasSQLLogin = dgvUsers.SelectedRows[0].Cells["HasSQLLogin"]?.Value != null && 
+                                   Convert.ToBoolean(dgvUsers.SelectedRows[0].Cells["HasSQLLogin"].Value);
+
+                if (hasSQLLogin)
+                {
+                    ErrorHandler.ShowWarning($"User '{username}' đã có SQL Login rồi!", "SQL Login đã tồn tại");
+                    return;
+                }
+
+                // Tạo dialog để nhập password
+                using (var passwordDialog = new Form())
+                {
+                    passwordDialog.Text = $"Tạo SQL Login cho: {username}";
+                    passwordDialog.Size = new Size(450, 220);
+                    passwordDialog.StartPosition = FormStartPosition.CenterParent;
+                    passwordDialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                    passwordDialog.MaximizeBox = false;
+                    passwordDialog.MinimizeBox = false;
+
+                    var lblTitle = new Label
+                    {
+                        Text = $"Tạo SQL Login cho user: {username}",
+                        Font = new Font("Microsoft YaHei UI", 11, FontStyle.Bold),
+                        Location = new Point(20, 20),
+                        Size = new Size(400, 25)
+                    };
+
+                    var lblPassword = new Label
+                    {
+                        Text = "Mật khẩu SQL Login:",
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        Location = new Point(20, 60),
+                        Size = new Size(160, 25)
+                    };
+
+                    var txtPassword = new TextBox
+                    {
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        Location = new Point(190, 58),
+                        Size = new Size(220, 25),
+                        PasswordChar = '*'
+                    };
+
+                    var lblConfirm = new Label
+                    {
+                        Text = "Xác nhận mật khẩu:",
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        Location = new Point(20, 100),
+                        Size = new Size(160, 25)
+                    };
+
+                    var txtConfirm = new TextBox
+                    {
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        Location = new Point(190, 98),
+                        Size = new Size(220, 25),
+                        PasswordChar = '*'
+                    };
+
+                    var btnOK = new Button
+                    {
+                        Text = "Tạo Login",
+                        Location = new Point(200, 140),
+                        Size = new Size(100, 30),
+                        DialogResult = DialogResult.OK,
+                        Font = new Font("Microsoft YaHei UI", 10),
+                        BackColor = Color.FromArgb(40, 167, 69),
+                        ForeColor = Color.White,
+                        FlatStyle = FlatStyle.Flat
+                    };
+
+                    var btnCancel = new Button
+                    {
+                        Text = "Hủy",
+                        Location = new Point(310, 140),
+                        Size = new Size(100, 30),
+                        DialogResult = DialogResult.Cancel,
+                        Font = new Font("Microsoft YaHei UI", 10)
+                    };
+
+                    passwordDialog.Controls.AddRange(new Control[] { lblTitle, lblPassword, txtPassword, lblConfirm, txtConfirm, btnOK, btnCancel });
+
+                    if (passwordDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string password = txtPassword.Text;
+                        string confirmPassword = txtConfirm.Text;
+
+                        if (string.IsNullOrEmpty(password))
+                        {
+                            ErrorHandler.ShowWarning("Vui lòng nhập mật khẩu!", "Thiếu thông tin");
+                            return;
+                        }
+
+                        if (password != confirmPassword)
+                        {
+                            ErrorHandler.ShowWarning("Mật khẩu xác nhận không khớp!", "Mật khẩu không khớp");
+                            return;
+                        }
+
+                        if (password.Length < 6)
+                        {
+                            ErrorHandler.ShowWarning("Mật khẩu phải có ít nhất 6 ký tự!", "Mật khẩu quá ngắn");
+                            return;
+                        }
+
+                        // Gọi stored procedure sp_CreateSQLLoginForExistingUser
+                        using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
+                        {
+                            connection.Open();
+                            using (var command = new SqlCommand("sp_CreateSQLLoginForExistingUser", connection))
+                            {
+                                command.CommandType = CommandType.StoredProcedure;
+                                command.Parameters.AddWithValue("@Username", username);
+                                command.Parameters.AddWithValue("@Password", password);
+
+                                var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, -1);
+                                messageParam.Direction = ParameterDirection.Output;
+                                command.Parameters.Add(messageParam);
+
+                                command.ExecuteNonQuery();
+
+                                string resultMessage = messageParam.Value.ToString();
+
+                                // Xử lý kết quả từ stored procedure
+                                if (resultMessage.Contains("THÀNH CÔNG") || resultMessage.Contains("thành công") || resultMessage.Contains("✅"))
+                                {
+                                    ErrorHandler.ShowSuccess(resultMessage);
+                                    LoadUsers();
+                                }
+                                else
+                                {
+                                    ErrorHandler.HandleStoredProcedureResult(resultMessage, "tạo SQL Login");
+                                }
+                            }
+                            connection.Close();
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "tạo SQL Login");
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "tạo SQL Login");
             }
         }
 

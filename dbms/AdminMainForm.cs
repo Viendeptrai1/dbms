@@ -394,6 +394,21 @@ namespace dbms
                 ErrorHandler.HandleGeneralError(ex, "mở dashboard sản phẩm");
             }
         }
+
+        private void btnBatchImport_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BatchImportReceiptsForm form = new BatchImportReceiptsForm(currentUserID, currentUsername);
+                form.ShowDialog();
+                // Refresh data sau khi batch import
+                LoadUsers();
+            }
+            catch (Exception ex)
+            {
+                ErrorHandler.HandleGeneralError(ex, "mở batch import");
+            }
+        }
         #endregion
     }
 }

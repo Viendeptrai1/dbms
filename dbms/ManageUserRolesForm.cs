@@ -15,6 +15,7 @@ namespace dbms
     {
         private readonly int userID;
         private readonly string username;
+        private readonly string currentAdminUsername;
         private readonly List<int> currentRoles;
         private readonly List<int> availableRoles;
 
@@ -22,17 +23,19 @@ namespace dbms
         {
             this.userID = userID;
             this.username = username;
+            this.currentAdminUsername = "admin"; // Default, should be passed from calling form
             this.currentRoles = new List<int>();
             this.availableRoles = new List<int>();
             InitializeComponent();
             InitializeData();
         }
 
-        // Constructor overload cho UserManagementForm
-        public ManageUserRolesForm(string username, string _)
+        // Constructor overload cho UserManagementForm with admin context
+        public ManageUserRolesForm(string username, string currentRole, string adminUsername = "admin")
         {
             this.userID = 0; // Sẽ tìm từ username
             this.username = username;
+            this.currentAdminUsername = adminUsername;
             this.currentRoles = new List<int>();
             this.availableRoles = new List<int>();
             InitializeComponent();
@@ -99,47 +102,69 @@ namespace dbms
         {
             try
             {
+                // Kiểm tra xem có chọn role nào không
+                int checkedCount = 0;
+                string selectedRoleName = "";
+                
+                for (int i = 0; i < clbRoles.Items.Count; i++)
+                {
+                    if (clbRoles.GetItemChecked(i))
+                    {
+                        checkedCount++;
+                        selectedRoleName = clbRoles.Items[i].ToString();
+                    }
+                }
+                
+                if (checkedCount == 0)
+                {
+                    ErrorHandler.ShowWarning("Vui lòng chọn ít nhất một role!", "Chưa chọn role");
+                    return;
+                }
+                
+                if (checkedCount > 1)
+                {
+                    ErrorHandler.ShowWarning("Chỉ được chọn một role duy nhất!\n\nHệ thống sử dụng Two-Tier Permission nên mỗi user chỉ có 1 role.", 
+                        "Chọn nhiều role");
+                    return;
+                }
+                
+                // Sử dụng sp_ChangeUserRoleComplete
                 using (var connection = new SqlConnection(Properties.Settings.Default.QLNhapHangConnectionString))
                 {
                     connection.Open();
-                    using (var transaction = connection.BeginTransaction())
+                    using (var command = new SqlCommand("sp_ChangeUserRoleComplete", connection))
                     {
-                        try
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@Username", username);
+                        command.Parameters.AddWithValue("@NewRoleName", selectedRoleName);
+                        command.Parameters.AddWithValue("@CurrentUsername", currentAdminUsername);
+                        
+                        var messageParam = new SqlParameter("@Message", SqlDbType.NVarChar, -1);
+                        messageParam.Direction = ParameterDirection.Output;
+                        command.Parameters.Add(messageParam);
+                        
+                        command.ExecuteNonQuery();
+                        
+                        string resultMessage = messageParam.Value.ToString();
+                        
+                        // Xử lý kết quả từ stored procedure
+                        if (resultMessage.Contains("THÀNH CÔNG") || resultMessage.Contains("thành công"))
                         {
-                            // Xóa tất cả vai trò hiện tại
-                            string deleteQuery = "DELETE FROM dbo.UsersRoles WHERE UserID = @UserID";
-                            using (var deleteCommand = new SqlCommand(deleteQuery, connection, transaction))
-                            {
-                                deleteCommand.Parameters.AddWithValue("@UserID", userID);
-                                deleteCommand.ExecuteNonQuery();
-                            }
-                            
-                            // Thêm vai trò mới được chọn
-                            string insertQuery = "INSERT INTO dbo.UsersRoles (UserID, RoleID) VALUES (@UserID, @RoleID)";
-                            for (int i = 0; i < clbRoles.Items.Count; i++)
-                            {
-                                if (clbRoles.GetItemChecked(i))
-                                {
-                                    using (var insertCommand = new SqlCommand(insertQuery, connection, transaction))
-                                    {
-                                        insertCommand.Parameters.AddWithValue("@UserID", userID);
-                                        insertCommand.Parameters.AddWithValue("@RoleID", availableRoles[i]);
-                                        insertCommand.ExecuteNonQuery();
-                                    }
-                                }
-                            }
-                            
-                            transaction.Commit();
+                            ErrorHandler.ShowSuccess(resultMessage);
                             this.DialogResult = DialogResult.OK;
                             this.Close();
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            transaction.Rollback();
-                            throw ex;
+                            ErrorHandler.HandleStoredProcedureResult(resultMessage, "thay đổi role");
                         }
                     }
+                    connection.Close();
                 }
+            }
+            catch (SqlException sqlEx)
+            {
+                ErrorHandler.HandleSqlError(sqlEx, "cập nhật vai trò");
             }
             catch (Exception ex)
             {

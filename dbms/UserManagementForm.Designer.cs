@@ -43,6 +43,7 @@ namespace dbms
             this.btnRevokeAll = new System.Windows.Forms.Button();
             this.btnDeleteUser = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnCreateSQLLogin = new System.Windows.Forms.Button();
             
             // Tab User Roles
             this.dgvUserRoles = new System.Windows.Forms.DataGridView();
@@ -184,6 +185,7 @@ namespace dbms
             this.btnCreateUser.Click += new System.EventHandler(this.btnCreateUser_Click);
             
             // tabManageUsers
+            this.tabManageUsers.Controls.Add(this.btnCreateSQLLogin);
             this.tabManageUsers.Controls.Add(this.btnRefresh);
             this.tabManageUsers.Controls.Add(this.btnDeleteUser);
             this.tabManageUsers.Controls.Add(this.btnRevokeAll);
@@ -298,6 +300,20 @@ namespace dbms
             this.btnRefresh.Text = "Làm mới";
             this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            
+            // btnCreateSQLLogin
+            this.btnCreateSQLLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(111)))), ((int)(((byte)(66)))), ((int)(((byte)(193)))));
+            this.btnCreateSQLLogin.FlatAppearance.BorderSize = 0;
+            this.btnCreateSQLLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCreateSQLLogin.Font = new System.Drawing.Font("Microsoft YaHei UI", 10F);
+            this.btnCreateSQLLogin.ForeColor = System.Drawing.Color.White;
+            this.btnCreateSQLLogin.Location = new System.Drawing.Point(140, 450);
+            this.btnCreateSQLLogin.Name = "btnCreateSQLLogin";
+            this.btnCreateSQLLogin.Size = new System.Drawing.Size(150, 30);
+            this.btnCreateSQLLogin.TabIndex = 8;
+            this.btnCreateSQLLogin.Text = "Tạo SQL Login";
+            this.btnCreateSQLLogin.UseVisualStyleBackColor = false;
+            this.btnCreateSQLLogin.Click += new System.EventHandler(this.btnCreateSQLLogin_Click);
             
             // tabUserRoles
             this.tabUserRoles.Controls.Add(this.lblUserRolesInfo);
@@ -418,6 +434,7 @@ namespace dbms
         private System.Windows.Forms.Button btnRevokeAll;
         private System.Windows.Forms.Button btnDeleteUser;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnCreateSQLLogin;
         
         // Tab User Roles
         private System.Windows.Forms.DataGridView dgvUserRoles;

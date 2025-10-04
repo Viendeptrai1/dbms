@@ -209,8 +209,13 @@ namespace dbms
                         command.Parameters.AddWithValue("@SupplierID", supplierID);
                         command.Parameters.AddWithValue("@UserID", userID);
                         command.Parameters.AddWithValue("@Notes", ""); // Không có field txtNotes
-                        command.Parameters.AddWithValue("@ReceiptID", 0).Direction = ParameterDirection.Output;
-                        command.Parameters.AddWithValue("@Message", "").Direction = ParameterDirection.Output;
+                        
+                        // Output parameters - PHẢI SET SIZE!
+                        var receiptIDParam = command.Parameters.Add("@ReceiptID", SqlDbType.Int);
+                        receiptIDParam.Direction = ParameterDirection.Output;
+                        
+                        var messageParam = command.Parameters.Add("@Message", SqlDbType.NVarChar, 200);
+                        messageParam.Direction = ParameterDirection.Output;
 
                         var linesParam = new SqlParameter("@ReceiptLines", SqlDbType.Structured);
                         linesParam.TypeName = "dbo.udt_GoodsReceiptLine";
@@ -218,14 +223,47 @@ namespace dbms
                         command.Parameters.Add(linesParam);
 
                         connection.Open();
+                        
+                        // DEBUG: Log trước khi execute
+                        MessageBox.Show($"Sẽ gọi SP với:\n" +
+                            $"SupplierID: {command.Parameters["@SupplierID"].Value}\n" +
+                            $"UserID: {command.Parameters["@UserID"].Value}\n" +
+                            $"Lines count: {linesTable.Rows.Count}",
+                            "DEBUG: Before Execute", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
                         command.ExecuteNonQuery();
                         connection.Close();
 
-                        var newReceiptID = command.Parameters["@ReceiptID"].Value;
-                        var message = command.Parameters["@Message"].Value.ToString();
+                        var receiptIDValue = command.Parameters["@ReceiptID"].Value;
+                        var messageValue = command.Parameters["@Message"].Value;
+                        
+                        // DEBUG: Log sau khi execute
+                        MessageBox.Show($"Kết quả từ SP:\n" +
+                            $"ReceiptID type: {receiptIDValue?.GetType().Name ?? "null"}\n" +
+                            $"ReceiptID value: {receiptIDValue ?? "null"}\n" +
+                            $"Message type: {messageValue?.GetType().Name ?? "null"}\n" +
+                            $"Message value: [{messageValue ?? "null"}]\n" +
+                            $"Message length: {messageValue?.ToString().Length ?? 0}",
+                            "DEBUG: After Execute", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        // Debug: Check if values are null
+                        if (receiptIDValue == null || receiptIDValue == DBNull.Value)
+                        {
+                            MessageBox.Show("Lỗi: Không nhận được ReceiptID từ stored procedure", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        
+                        if (messageValue == null || messageValue == DBNull.Value)
+                        {
+                            MessageBox.Show("Lỗi: Không nhận được Message từ stored procedure", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        
+                        var newReceiptID = receiptIDValue;
+                        var message = messageValue.ToString();
                         
                         // Xử lý kết quả từ stored procedure
-                        if (message.ToLower().Contains("thành công"))
+                        if (!string.IsNullOrEmpty(message) && message.ToLower().Contains("thành công"))
                         {
                             ErrorHandler.ShowSuccess($"Tạo phiếu nhập thành công!\nMã phiếu: {newReceiptID}");
                             this.DialogResult = DialogResult.OK;
@@ -233,19 +271,38 @@ namespace dbms
                         }
                         else
                         {
-                            // Hiển thị lỗi từ stored procedure
-                            ErrorHandler.HandleStoredProcedureResult(message, "tạo phiếu nhập");
+                            // Hiển thị lỗi từ stored procedure với full message
+                            MessageBox.Show($"Lỗi tạo phiếu nhập:\n\n{message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
             }
             catch (SqlException sqlEx)
             {
-                ErrorHandler.HandleSqlError(sqlEx, "tạo phiếu nhập");
+                // Hiển thị FULL SQL error
+                string fullError = $"SQL Error:\n\n";
+                fullError += $"Message: {sqlEx.Message}\n";
+                fullError += $"Number: {sqlEx.Number}\n";
+                fullError += $"State: {sqlEx.State}\n";
+                fullError += $"Class: {sqlEx.Class}\n";
+                if (sqlEx.InnerException != null)
+                {
+                    fullError += $"\nInner Exception: {sqlEx.InnerException.Message}";
+                }
+                MessageBox.Show(fullError, "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
-                ErrorHandler.HandleGeneralError(ex, "tạo phiếu nhập");
+                // Hiển thị FULL error
+                string fullError = $"Error:\n\n";
+                fullError += $"Type: {ex.GetType().Name}\n";
+                fullError += $"Message: {ex.Message}\n";
+                fullError += $"StackTrace:\n{ex.StackTrace}";
+                if (ex.InnerException != null)
+                {
+                    fullError += $"\n\nInner Exception: {ex.InnerException.Message}";
+                }
+                MessageBox.Show(fullError, "Error Detail", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
